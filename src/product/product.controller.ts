@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Post, Req, Res, UploadedFile } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Query, Req, Res, UploadedFile } from '@nestjs/common';
 import { ProductService } from './product.service';
 import { Response } from 'express';
 import { Product } from 'src/data-service/entities/product.entity';
@@ -26,6 +26,28 @@ export class ProductController {
     try {
       const products = await this.productService.getProducts();
       response.status(201).send({success:true, message:'product fetched successfully', data:products});
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  
+  @Get('get/:id')
+  async getProduct(@Res() response: Response,@Param('id', ParseIntPipe) id:number) {
+    try {
+      const productData = await this.productService.getProduct(id);
+      response.status(201).send({success:true, message:'product fetched successfully', data:productData});
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+ 
+  @Get('filter')
+  async filterByCategory(@Res() response: Response, @Query('cats') cats:string[]) {
+    try {
+      const productData = await this.productService.filterByCategory(cats);
+      response.status(201).send({success:true, message:'product fetched successfully', data:productData});
     } catch (error) {
       if (error instanceof HttpException) throw error;
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);

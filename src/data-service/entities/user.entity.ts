@@ -1,6 +1,7 @@
 import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm"
 import * as bcrypt from 'bcrypt'
 import { Blog } from "./blog.entity"
+import { Product } from "./product.entity"
 
 
  export enum UserRole {
@@ -39,4 +40,7 @@ export class User {
     @OneToMany(()=> Blog, (blog) => blog.user)
     blog?:Blog[]
 
+
+    @OneToMany(() => Product, (product) => product.user)
+    product?: Product[]
 }
