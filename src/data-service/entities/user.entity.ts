@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, CreateDateColumn, UpdateDateColumn, OneToMany, OneToMany } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm"
 import * as bcrypt from 'bcrypt'
 import { Blog } from "./blog.entity"
 import { Product } from "./product.entity"
