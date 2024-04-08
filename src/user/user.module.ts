@@ -33,7 +33,7 @@ import { AuthService } from 'src/auth/auth.service';
     // ...ProfileRepoProvider,
     // ...AssetsRepoProvider,
     // ...ActivityRepoProvider,
-    // UserService
+    UserService
 ]
 })
 

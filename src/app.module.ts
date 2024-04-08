@@ -1,4 +1,5 @@
-import { Module } from '@nestjs/common';
+import { Module , NestModule, MiddlewareConsumer, RequestMethod,} from '@nestjs/common';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
@@ -7,6 +8,12 @@ import { userModule } from './user/user.module';
 import { DatabaseModule } from './db/database.module';
 import * as Joi from 'joi'
 import { ProductModule } from './product/product.module';
+import { BlogModule } from './blog/blog.module';
+import { VerifyUserMiddleware } from './common/middleware/verifyUser';
+import { AuthModule } from './auth/auth.module';
+import { UserService } from './user/user.service';
+import { User } from './data-service/entities/user.entity';
+import { ExcludePasswordInterceptor } from './common/interceptors/exludePassword';
 
 @Module({
   imports: [
@@ -23,11 +30,23 @@ import { ProductModule } from './product/product.module';
       DB_NAME: Joi.string().required(),
       }),
     }),
+    TypeOrmModule.forFeature([User]),
     DatabaseModule,
     userModule,
-   ProductModule
+    ProductModule,
+    BlogModule,
+    AuthModule
   ],
   controllers: [AppController],
   providers: [AppService],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(VerifyUserMiddleware)
+    .exclude(
+      { path: 'v1/user/signup', method: RequestMethod.POST },
+      { path: 'v1/user/signin', method: RequestMethod.POST }
+    ) 
+    .forRoutes('*');
+  }
+}
