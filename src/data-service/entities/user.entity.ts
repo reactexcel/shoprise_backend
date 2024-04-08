@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, CreateDateColumn, UpdateDateColumn, OneToMany, OneToMany } from "typeorm"
 import * as bcrypt from 'bcrypt'
+import { Blog } from "./blog.entity"
 import { Product } from "./product.entity"
 
 
@@ -23,11 +24,6 @@ export class User {
     @Column()
     email: string
 
-    // @BeforeInsert()
-    // async hashedPassword(){
-    //   this.password = await bcrypt.hash(this.password, 10);
-    // }
-
     @Column()
     password: string
 
@@ -39,6 +35,11 @@ export class User {
 
     @UpdateDateColumn()
     updatedAt?:Date;
+
+
+    @OneToMany(()=> Blog, (blog) => blog.user)
+    blog?:Blog[]
+
 
     @OneToMany(() => Product, (product) => product.user)
     product?: Product[]
