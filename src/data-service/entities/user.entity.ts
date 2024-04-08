@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, CreateDateColumn, UpdateDateColumn } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, CreateDateColumn, UpdateDateColumn, OneToMany } from "typeorm"
 import * as bcrypt from 'bcrypt'
+import { Product } from "./product.entity"
 
 
  export enum UserRole {
@@ -38,4 +39,7 @@ export class User {
 
     @UpdateDateColumn()
     updatedAt?:Date;
+
+    @OneToMany(() => Product, (product) => product.user)
+    product?: Product[]
 }

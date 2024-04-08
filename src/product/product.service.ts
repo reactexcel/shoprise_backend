@@ -39,8 +39,11 @@ export class ProductService {
   }
 
   async addProduct(productData: Partial<Product|any>,photos:any): Promise<Product>{
-
-    const product = this.productRepository.create(productData);
+    const uid:string = '1'
+    const product = this.productRepository.create({
+      userId:uid,
+      ...productData,
+    });
     const savedProduct = await this.productRepository.save(product);
     
     await this.addProductAsset(photos,savedProduct.id); //calling product asset method
@@ -54,9 +57,26 @@ export class ProductService {
         photos:true,
       }
     });
-
-    // const q = "SELECT * FROM product"; // if we want to use raw query
-    // return this.productRepository.query(q)
+  }
+  
+  async getProduct(id:number): Promise<Product> {      
+    const q = `SELECT product.*, product_asset.url FROM product LEFT JOIN product_asset ON product.id = product_asset.productId WHERE product.id = ${id}`
+    const data = await this.productRepository.query(q);
+    return data
+  }
+  
+  async filterByCategory(categories: string[]): Promise<Product[]> {
+    
+    console.log(categories);
+    
+      const q = `SELECT * FROM product LEFT JOIN product_asset ON product.id = product_asset.productId WHERE cat IN (?)`
+      const data = this.productRepository.query(q,[categories])
+      return data
+      // return await this.productRepository
+      // .createQueryBuilder('product')
+      // .where(`product.cat IN (:...categories)`, { categories })
+      // .leftJoinAndSelect('product.id','product_asset.productId')
+      // .getMany();
   }
 }
 

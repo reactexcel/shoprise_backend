@@ -16,7 +16,7 @@ export class ProductModule {
     consumer
       .apply(MulterMiddleware)
       .forRoutes(
-        { path: 'product/add', method: RequestMethod.POST }
+        { path: 'v1/product/add', method: RequestMethod.POST }
         );
   }
 }

@@ -1,5 +1,6 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Timestamp, OneToMany } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Timestamp, OneToMany, ManyToOne } from "typeorm"
 import { productAsset } from "./productAsset.entity"
+import { User } from "./user.entity"
 
 @Entity()
 export class Product {
@@ -20,9 +21,15 @@ export class Product {
 
     @Column()
     cat: string
+
+    @Column()
+    userId:string
     
     @OneToMany(() => productAsset, (photo) => photo.product)
     photos?: productAsset[]
+
+    @ManyToOne(() => User, (user) => user.product)
+    user: User
 
     @CreateDateColumn()
     createdAt: Date;
