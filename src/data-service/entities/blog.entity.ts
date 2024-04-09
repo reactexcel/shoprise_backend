@@ -25,6 +25,9 @@ export class Blog {
     @CreateDateColumn()
     createdAt?:Date;
 
+    @Column()
+    userId: number
+
     @ManyToOne(() => User, (user)=> user.blog )
     user:User
 

@@ -24,7 +24,6 @@ export class userController {
 
    @Post('signup')
    @UseInterceptors(ExistenceCheckInterceptor)
-//    @UsePipes(new ValidationPipe())
    @ApiResponse({ status: 201, description: 'User signup', type: UserResponseDto })
     async signup(@Body() user:CreateUserDto, @Res() response:Response) {
         try{
