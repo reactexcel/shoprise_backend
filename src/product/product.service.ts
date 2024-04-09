@@ -79,6 +79,12 @@ export class ProductService {
   }
 
   async queryProduct(message:string,id:number,userId):Promise<string>{
+    console.log({
+      id,
+      message,
+      userId
+    });
+    
     return "inside query product"
   }
 }

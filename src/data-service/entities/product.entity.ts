@@ -8,7 +8,10 @@ export class Product {
     id: number
 
     @Column()
-    name: string
+    title: string
+    
+    @Column()
+    desc: string
 
     @Column()
     price: string
@@ -24,6 +27,9 @@ export class Product {
 
     @Column()
     userId:string
+    
+    @Column({default:false})
+    favourite:boolean
     
     @OneToMany(() => productAsset, (photo) => photo.product)
     photos?: productAsset[]
