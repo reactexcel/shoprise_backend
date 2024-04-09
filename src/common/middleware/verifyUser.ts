@@ -9,14 +9,14 @@ import { CreateUserDto } from 'src/user/dto/create-user-dto';
 
 
 
-export class CustomRequest extends Request{
-  headers:any;
-  user:{
-    id?:number;
-    firstName:string;
-    lastName:string;
-  }
-}
+// export class CustomRequest extends Request{
+//   headers:any;
+//   user:{
+//     id?:number;
+//     firstName:string;
+//     lastName:string;
+//   }
+// }
 
 
 @Injectable()
@@ -25,7 +25,7 @@ export class VerifyUserMiddleware implements NestMiddleware {
     private readonly userService:UserService,
     private readonly authService:AuthService,
   ){}
-  async use(req:CustomRequest, res: Response, next: NextFunction) {
+  async use(req:any, res: Response, next: NextFunction) {
    const token =  req.headers.authorization?.split(' ')[1];
    if(!token) return res.status(400).send({message:"token missing"})
     try {

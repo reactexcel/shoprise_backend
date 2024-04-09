@@ -23,7 +23,7 @@ import { PASSWORD_RESET, SIGNIN_SUCCESSFULLY, SIGNUP_SUCCESSFULLY } from '../com
 import { E_PASSWORD_NOT_MATCHED, E_USER_NOT_FOUND } from 'src/common/constants/exception';
 import { ApiTags, ApiResponse, ApiOperation } from '@nestjs/swagger';
 import {Multer} from 'multer'
-import { CustomRequest } from 'src/common/middleware/verifyUser';
+// import { CustomRequest } from 'src/common/middleware/verifyUser';
 
 @Controller('blog')
 @ApiTags('user')
@@ -34,7 +34,7 @@ export class BlogController {
 
 
    @Post('post')
-    async postBlog(@Body() createBlogDto:Blog, @Req() req:CustomRequest, @UploadedFiles() assets:Multer.File[], @Res() response:Response){
+    async postBlog(@Body() createBlogDto:Blog, @Req() req:any, @UploadedFiles() assets:Multer.File[], @Res() response:Response){
         try{ 
           const blogData = await this.blogService.createBlog({...createBlogDto , userId:req.user.id}, assets);
           response.status(201).send({success:true, data:blogData})

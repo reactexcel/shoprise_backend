@@ -45,7 +45,9 @@ export class AppModule implements NestModule {
     consumer.apply(VerifyUserMiddleware)
     .exclude(
       { path: 'v1/user/signup', method: RequestMethod.POST },
-      { path: 'v1/user/signin', method: RequestMethod.POST }
+      { path: 'v1/user/signin', method: RequestMethod.POST },
+      { path: 'v1/product/get/all', method: RequestMethod.GET },
+      { path: 'v1/product/filter/cats', method: RequestMethod.GET }
     ) 
     .forRoutes('*');
   }
