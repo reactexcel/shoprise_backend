@@ -1,6 +1,6 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Query, Req, Res, UploadedFile } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { Response } from 'express';
+import { Response,Request } from 'express';
 import { Product } from 'src/data-service/entities/product.entity';
 import {Multer} from 'multer'
 
@@ -12,7 +12,7 @@ export class ProductController {
   @Post('add')
   async addProduct(@UploadedFile() file:Multer.File[], @Req() req:any,  @Res() response:Response) {
     try {      
-      const productData = await this.productService.addProduct(req.body,req.files);
+      const productData = await this.productService.addProduct(req.body,req.files,req.user);
 
       response.status(201).send({success:true, message:'product added successfully', data:productData});
     } catch (error) {
@@ -47,6 +47,17 @@ export class ProductController {
   async filterByCategory(@Res() response: Response, @Query('cats') cats:string[]) {
     try {
       const productData = await this.productService.filterByCategory(cats);
+      response.status(201).send({success:true, message:'product fetched successfully', data:productData});
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Get('query')
+  async queryProduct(@Req() req:any,@Res() response: Response, @Param('id', ParseIntPipe) id:number) {
+    try {
+      const productData = await this.productService.queryProduct(req.body,id,req.user);
       response.status(201).send({success:true, message:'product fetched successfully', data:productData});
     } catch (error) {
       if (error instanceof HttpException) throw error;

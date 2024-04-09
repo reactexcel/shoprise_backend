@@ -38,10 +38,9 @@ export class ProductService {
     return this.productAssetRepository.query(query)
   }
 
-  async addProduct(productData: Partial<Product|any>,photos:any): Promise<Product>{
-    const uid:string = '1'
+  async addProduct(productData: Partial<Product|any>,photos:any,userId:string): Promise<Product>{
     const product = this.productRepository.create({
-      userId:uid,
+      userId,
       ...productData,
     });
     const savedProduct = await this.productRepository.save(product);
@@ -77,6 +76,10 @@ export class ProductService {
       // .where(`product.cat IN (:...categories)`, { categories })
       // .leftJoinAndSelect('product.id','product_asset.productId')
       // .getMany();
+  }
+
+  async queryProduct(message:string,id:number,userId):Promise<string>{
+    return "inside query product"
   }
 }
 
