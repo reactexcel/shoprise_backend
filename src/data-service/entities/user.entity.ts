@@ -2,6 +2,7 @@ import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, CreateDateColumn,
 import * as bcrypt from 'bcrypt'
 import { Blog } from "./blog.entity"
 import { Product } from "./product.entity"
+import { Order } from "./order.entity"
 
 
  export enum UserRole {
@@ -43,4 +44,7 @@ export class User {
 
     @OneToMany(() => Product, (product) => product.user)
     product?: Product[]
+    
+    @OneToMany(() => Order, (order) => order.user)
+    order?: Order[]
 }
