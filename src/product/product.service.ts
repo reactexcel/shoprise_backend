@@ -78,6 +78,17 @@ export class ProductService {
       // .getMany();
   }
 
+  async favProduct(id:number):Promise<Product>{
+    const productData = await this.productRepository.findOne({where:{id}})
+
+    const q1 = `UPDATE product SET favourite = false WHERE id = ?`
+    const q2 = `UPDATE product SET favourite = true WHERE id = ?`
+
+    if(productData.favourite) return await this.productRepository.query(q1,[id]) 
+    
+    return await this.productRepository.query(q2,[id])
+  }
+
   async queryProduct(message:string,id:number,userId):Promise<string>{
     console.log({
       id,

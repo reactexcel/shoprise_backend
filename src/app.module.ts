@@ -14,6 +14,7 @@ import { AuthModule } from './auth/auth.module';
 import { UserService } from './user/user.service';
 import { User } from './data-service/entities/user.entity';
 import { ExcludePasswordInterceptor } from './common/interceptors/exludePassword';
+import { OrderModule } from './order/order.module';
 
 @Module({
   imports: [
@@ -35,7 +36,8 @@ import { ExcludePasswordInterceptor } from './common/interceptors/exludePassword
     userModule,
     ProductModule,
     BlogModule,
-    AuthModule
+    AuthModule,
+    OrderModule
   ],
   controllers: [AppController],
   providers: [AppService],

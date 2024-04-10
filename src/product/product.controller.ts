@@ -1,6 +1,6 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Query, Req, Res, UploadedFile } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Param, ParseIntPipe, Post, Put, Query, Req, Res, UploadedFile } from '@nestjs/common';
 import { ProductService } from './product.service';
-import { Response,Request } from 'express';
+import { Response,Request, response } from 'express';
 import { Product } from 'src/data-service/entities/product.entity';
 import {Multer} from 'multer'
 
@@ -47,6 +47,17 @@ export class ProductController {
   async filterByCategory(@Res() response: Response, @Query('cats') cats:string[]) {
     try {
       const productData = await this.productService.filterByCategory(cats);
+      response.status(201).send({success:true, message:'product fetched successfully', data:productData});
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Put('favourite/:id')
+  async favProduct(@Res() response:Response, @Param('id', ParseIntPipe) id:number){
+    try {
+      const productData = await this.productService.favProduct(id);
       response.status(201).send({success:true, message:'product fetched successfully', data:productData});
     } catch (error) {
       if (error instanceof HttpException) throw error;
