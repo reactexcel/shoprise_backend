@@ -15,6 +15,8 @@ import { UserService } from './user/user.service';
 import { User } from './data-service/entities/user.entity';
 import { ExcludePasswordInterceptor } from './common/interceptors/exludePassword';
 import { OrderModule } from './order/order.module';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 
 @Module({
   imports: [
@@ -37,7 +39,14 @@ import { OrderModule } from './order/order.module';
     ProductModule,
     BlogModule,
     AuthModule,
-    OrderModule
+    OrderModule,
+  
+    // Serve static files from the 'uploads' folder
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'uploads'),
+      serveRoot: '/uploads',
+      // serveRoot: '/images', // URL path where the static files will be served
+    }),
   ],
   controllers: [AppController],
   providers: [AppService],
@@ -50,7 +59,10 @@ export class AppModule implements NestModule {
       { path: 'v1/user/signin', method: RequestMethod.POST },
       { path: 'v1/product/get/all', method: RequestMethod.GET },
       { path: 'v1/product/filter/cats', method: RequestMethod.GET }
+      
     ) 
-    .forRoutes('*');
+    .forRoutes(
+      {path: 'v1/product/add', method: RequestMethod.POST}
+    );
   }
 }

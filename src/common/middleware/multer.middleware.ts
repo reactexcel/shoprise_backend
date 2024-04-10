@@ -10,7 +10,7 @@ export class MulterMiddleware implements NestMiddleware {
   constructor() {
     this.multer = multer({
       storage: multer.diskStorage({
-        destination: 'src/uploads/',
+        destination: 'uploads/',
         filename: (req: Request, file: any, cb: (error: Error | null, filename: string) => void) => {
           const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9);
           const extension = path.extname(file.originalname);

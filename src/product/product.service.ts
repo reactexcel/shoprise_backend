@@ -32,7 +32,7 @@ export class ProductService {
 
     const filenames = urls.map(url => url.filename);
     let query = 'INSERT INTO product_asset (url, productId) VALUES ';
-    const valueStrings = filenames.map(filename => `('${filename}', '${id}')`);
+    const valueStrings = filenames.map(filename => `('http://116.202.210.102:3000/uploads/${filename}', '${id}')`);
     query += valueStrings.join(', ');
 
     return this.productAssetRepository.query(query)
@@ -58,10 +58,13 @@ export class ProductService {
     });
   }
   
-  async getProduct(id:number): Promise<Product> {      
-    const q = `SELECT product.*, product_asset.url FROM product LEFT JOIN product_asset ON product.id = product_asset.productId WHERE product.id = ${id}`
-    const data = await this.productRepository.query(q);
-    return data
+  async getProduct(id:number): Promise<Product> {
+    return this.productRepository.findOne({
+      where:{id},
+      relations:{
+        photos:true,
+      }
+    })
   }
   
   async filterByCategory(categories: string[]): Promise<Product[]> {
