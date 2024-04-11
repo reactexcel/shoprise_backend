@@ -34,7 +34,6 @@ async function bootstrap() {
   });
 
   app.useStaticAssets(join(__dirname,'..',  'uploads'));
-  console.log(join(__dirname,'..',  'uploads'))
   await app.listen(3000);
 }
 bootstrap();

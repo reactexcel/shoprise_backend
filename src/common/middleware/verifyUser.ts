@@ -33,7 +33,6 @@ export class VerifyUserMiddleware implements NestMiddleware {
         const {password, createdAt, updatedAt , ...user} = await this.userService.fetchById(decodeData.id);
         if(!user) return res.status(410).send({message:"User has removed"})
         req.user = user
-      console.log("======="+user);
         next()
     } catch (error) {
         res.status(401).send({message:HttpStatus.UNAUTHORIZED})
