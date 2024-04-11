@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Timestamp, OneToMany, ManyToOne, OneToOne } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Timestamp, OneToMany, ManyToOne, OneToOne, ManyToMany, JoinColumn, JoinTable } from "typeorm"
 import { productAsset } from "./productAsset.entity"
 import { User } from "./user.entity"
 import { Order } from "./order.entity"
@@ -25,6 +25,12 @@ export class Product {
 
     @Column()
     cat: string
+    
+    @Column()
+    subcat: string
+    
+    @Column()
+    condition: string
 
     @Column()
     userId:string
@@ -35,11 +41,11 @@ export class Product {
     @OneToMany(() => productAsset, (photo) => photo.product)
     photos?: productAsset[]
 
-    @ManyToOne(() => User, (user) => user.product)
+    @ManyToOne(() => User, (user) => user.products)
     user: User
     
-    @OneToOne(() => Order, (order) => order.product)
-    order: Order
+    @ManyToMany(() => Order, (order) => order.products)
+    orders: Order[]
 
     @CreateDateColumn()
     createdAt: Date;

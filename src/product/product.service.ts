@@ -62,7 +62,8 @@ export class ProductService {
     return this.productRepository.findOne({
       where:{id},
       relations:{
-        photos:true,
+        user:true,
+        photos:true
       }
     })
   }

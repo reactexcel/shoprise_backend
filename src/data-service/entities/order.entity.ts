@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Timestamp, OneToMany, ManyToOne, OneToOne } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, ManyToMany, JoinColumn, JoinTable } from "typeorm"
 import { Product } from "./product.entity"
 import { User } from "./user.entity"
 
@@ -24,16 +24,17 @@ export class Order {
     
     @Column({default:"pending"})
     status:string
+        
+    @CreateDateColumn()
+    createdAt: Date;
     
-    @OneToOne(() => Product, (product) => product.order)
-    product?:Product
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+    @ManyToMany(() => Product, (product) => product.orders)
+    @JoinTable()
+    products:Product[]
 
     @ManyToOne(() => User, (user) => user.order)
     user: User
-
-    @CreateDateColumn()
-    createdAt: Date;
-
-    @UpdateDateColumn()
-    updatedAt: Date;
 }
