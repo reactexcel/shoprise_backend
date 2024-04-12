@@ -44,9 +44,9 @@ export class ProductController {
   }
  
   @Get('filter')
-  async filterByCategory(@Res() response: Response, @Query('cats') cats:string[]) {
+  async filterByCategory(@Req() req:any, @Res() response: Response) {
     try {
-      const productData = await this.productService.filterByCategory(cats);
+      const productData = await this.productService.filterByCategory(req.body.cat);
       response.status(201).send({success:true, message:'product fetched successfully', data:productData});
     } catch (error) {
       if (error instanceof HttpException) throw error;
