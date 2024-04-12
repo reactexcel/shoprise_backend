@@ -69,17 +69,10 @@ export class ProductService {
   }
   
   async filterByCategory(categories: string[]): Promise<Product[]> {
-    
-    console.log(categories);
-    
-      const q = `SELECT * FROM product LEFT JOIN product_asset ON product.id = product_asset.productId WHERE cat IN (?)`
-      const data = this.productRepository.query(q,[categories])
-      return data
-      // return await this.productRepository
-      // .createQueryBuilder('product')
-      // .where(`product.cat IN (:...categories)`, { categories })
-      // .leftJoinAndSelect('product.id','product_asset.productId')
-      // .getMany();
+      return await this.productRepository
+      .createQueryBuilder('product')
+      .where('product.cat IN (:...categories)', { categories })
+      .getMany();
   }
 
   async favProduct(id:number):Promise<Product>{

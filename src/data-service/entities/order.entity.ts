@@ -31,7 +31,7 @@ export class Order {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @ManyToMany(() => Product, (product) => product.orders)
+    @ManyToMany(() => Product, (product) => product.orders,{cascade:true})
     @JoinTable()
     products:Product[]
 
