@@ -69,10 +69,13 @@ export class ProductService {
   }
   
   async filterByCategory(categories: string[]): Promise<Product[]> {
+    if(categories != null){
       return await this.productRepository
       .createQueryBuilder('product')
       .where('product.cat IN (:...categories)', { categories })
       .getMany();
+    }
+    return this.getProducts()
   }
 
   async favProduct(id:number):Promise<Product>{

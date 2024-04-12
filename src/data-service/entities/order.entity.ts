@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, ManyToMany, JoinColumn, JoinTable } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, JoinTable } from "typeorm"
 import { Product } from "./product.entity"
 import { User } from "./user.entity"
 
@@ -31,9 +31,8 @@ export class Order {
     @UpdateDateColumn()
     updatedAt: Date;
 
-    @ManyToMany(() => Product, (product) => product.orders,{cascade:true})
-    @JoinTable()
-    products:Product[]
+    @ManyToOne(() => Product, (product) => product.order)
+    product:Product[]
 
     @ManyToOne(() => User, (user) => user.order)
     user: User

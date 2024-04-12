@@ -45,8 +45,13 @@ export class ProductController {
  
   @Get('filter')
   async filterByCategory(@Req() req:any, @Res() response: Response) {
+    let productData
     try {
-      const productData = await this.productService.filterByCategory(req.body.cat);
+      if (req.body.cat.length) {
+          productData = await this.productService.filterByCategory(req.body.cat);
+      } else {
+          productData = await this.productService.getProducts();
+      }
       response.status(201).send({success:true, message:'product fetched successfully', data:productData});
     } catch (error) {
       if (error instanceof HttpException) throw error;

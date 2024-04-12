@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, Timestamp, OneToMany, ManyToOne, OneToOne, ManyToMany, JoinColumn, JoinTable } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne } from "typeorm"
 import { productAsset } from "./productAsset.entity"
 import { User } from "./user.entity"
 import { Order } from "./order.entity"
@@ -16,9 +16,6 @@ export class Product {
 
     @Column()
     price: string
-    
-    @Column()
-    deliveryFee: string
 
     @Column()
     location: string
@@ -44,8 +41,8 @@ export class Product {
     @ManyToOne(() => User, (user) => user.products)
     user: User
     
-    @ManyToMany(() => Order, (order) => order.products)
-    orders: Order[]
+    @OneToMany(() => Order, (order) => order.product)
+    order: Order
 
     @CreateDateColumn()
     createdAt: Date;
