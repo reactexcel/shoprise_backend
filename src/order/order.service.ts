@@ -17,11 +17,9 @@ export class OrderService {
         
         const productData = await this.productRepository.findOne({where:{id}})
 
-        const total:number = this.totalPrice(productData.price,productData.deliveryFee)
         const orderData = this.orderRepository.create({
             userId,
             productId:productData.id,
-            total,
             ...order
         })
         return await this.orderRepository.save(orderData)
@@ -30,15 +28,9 @@ export class OrderService {
     async getOrders():Promise<Order[]>{
         return await this.orderRepository.find({
             relations:{
-                products:true,
+                product:true,
                 user:true
             }
         })
-    }
-
-    totalPrice(price:string,deliveryFee:string){
-        const price1 = parseInt(price.split('$')[1])
-        const delFee = parseInt(deliveryFee.split('$')[1])
-        return price1+delFee
     }
 }
