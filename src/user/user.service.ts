@@ -29,13 +29,34 @@ export class UserService{
        {
           where:{id},
        });
-
   }
 
   async resetPassword(id:number , updatedPassword:string): Promise<User | null> {
     const user = await this.userRepository.findOne({where:{id}})
     const newUser =this.userRepository.merge(user, {password:updatedPassword})
     return await this.userRepository.save(newUser)
+  }
+
+  async updateProfile(id:number,user:User): Promise<User | any> {
+    console.log(user," ========== ",id);
+    // return this.userRepository.update(id,user)
+    const q = 'UPDATE user SET (phone=?,location=?,zipcode=?,address=?,linkedin=?,facebook=?,twitter=?,instagram=?) WHERE id=?'
+    return await this.userRepository.query(q,[user.phone,user.location,user.zipcode,user.address,user.linkedin,user.facebook,user.twitter,user.instagram,id])
+    // return await this.userRepository
+    //   .createQueryBuilder()
+    //   .update(User)
+    //   .set({
+    //     phone:user.phone,
+    //     location:user.location,
+    //     zipcode:user.zipcode,
+    //     address:user.address,
+    //     linkedin:user.linkedin,
+    //     facebook:user.facebook,
+    //     twitter:user.twitter,
+    //     instagram:user.instagram
+    //   })
+    //   .where("id = :id",{id})
+    //   .execute()
   }
 
 //   async updateProfileImg(id:number ,profileImgPath:string): Promise<Iassets> {
