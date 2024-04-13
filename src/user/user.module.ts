@@ -5,6 +5,7 @@ import { userController } from './user.controller';
 import { UserService } from './user.service';
 import {User} from '../data-service/entities/user.entity'
 import { AuthService } from 'src/auth/auth.service';
+import { MulterMiddleware } from 'src/common/middleware/multer.middleware';
 // import { DatabaseModule } from './database.module';
 // import { UserRepoProvider } from '../providers/userRepo.provider';
 // import { ProfileRepoProvider } from '../providers/profileRepo.provider';
@@ -37,14 +38,14 @@ import { AuthService } from 'src/auth/auth.service';
 ]
 })
 
-export class userModule {}
-// export class userModule {
-//   configure(consumer: MiddlewareConsumer) {
-//     consumer
-//       .apply(MulterMiddleware)
-//       .forRoutes(
-//         { path: 'user/upload/profile_img', method: RequestMethod.PUT },
-//         { path: 'user/upload/back_img', method: RequestMethod.PUT }
-//         );
-//   }
-// }
+// export class userModule {}
+export class userModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer
+      .apply(MulterMiddleware)
+      .forRoutes(
+        { path: 'v1/user/update/profile_img', method: RequestMethod.PUT },
+        { path: 'v1/user/update/back_img', method: RequestMethod.PUT }
+        );
+  }
+}
