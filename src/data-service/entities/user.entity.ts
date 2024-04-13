@@ -54,6 +54,12 @@ export class User {
     
     @Column({default:null})
     rating?: string
+    
+    @Column({default:null})
+    profilePhoto?: string
+    
+    @Column({default:null})
+    coverPhoto?: string
 
     @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
     role: UserRole;

@@ -25,6 +25,7 @@ export class UserService{
   }
 
   async fetchById(id:number): Promise<User> {
+    
     return this.userRepository.findOne(
        {
           where:{id},
@@ -42,13 +43,23 @@ export class UserService{
     return this.fetchById(id)
   }
 
-//   async updateProfileImg(id:number ,profileImgPath:string): Promise<Iassets> {
-//     const assets = await this.assetsRepository.findOne({where:{id}});
-//     if (assets.userProfile!=='' && fs.existsSync(`src/uploads/${assets.userProfile}`)) 
-//        fs.unlinkSync(`src/uploads/${assets.userProfile}`);
-//     const newAssets = this.assetsRepository.merge(assets, {userProfile:profileImgPath})
-//     return await this.assetsRepository.save(newAssets)
-//   }
+  async updateProfilePhoto(id:number,path:string):Promise<User|null>{
+    
+    await this.userRepository.update(id,{profilePhoto:"http://116.202.210.102:3000/uploads/"+path})
+    return this.fetchById(id)
+  }
+  
+  async updateCoverPhoto(id:number,path:string):Promise<User|null>{
+    await this.userRepository.update(id,{coverPhoto:"http://116.202.210.102:3000/uploads/"+path})
+    return this.fetchById(id)
+  }
+  // async updateProfileImg(id:number ,profileImgPath:string): Promise<Iassets> {
+  //   const assets = await this.assetsRepository.findOne({where:{id}});
+  //   if (assets.userProfile!=='' && fs.existsSync(`src/uploads/${assets.userProfile}`)) 
+  //      fs.unlinkSync(`src/uploads/${assets.userProfile}`);
+  //   const newAssets = this.assetsRepository.merge(assets, {userProfile:profileImgPath})
+  //   return await this.assetsRepository.save(newAssets)
+  // }
 
 //   async updateBkgdImg(id:number ,backgroundImgPath:string): Promise<UserAssets> {
 //     const assets = await this.assetsRepository.findOne({where:{id}});

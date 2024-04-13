@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res, HttpException, HttpStatus, UseInterceptors, Put, ValidationPipe, UsePipes, Req} from '@nestjs/common';
+import { Controller, Post, Body, Res, HttpException, HttpStatus, UseInterceptors, Put, ValidationPipe, UsePipes, Req, Get, UploadedFile} from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthService } from 'src/auth/auth.service';
 import { Response } from 'express';
@@ -12,6 +12,7 @@ import { CreateUserDto } from './dto/create-user-dto';
 import { IncomingSigninDto } from './dto/signin-incoming-dto';
 import { UserResponseDto } from './dto/user-response-dto';
 import { ResetPasswordIncomingDto } from './dto/reset-password-incoming-dto';
+import {Multer} from 'multer'
 
 @Controller('user')
 @ApiTags('user')
@@ -72,10 +73,46 @@ export class userController {
         }
     }
 
+    @Get('get')
+    async fetchById(@Req() req:any, @Res() response:Response){
+        try {
+            
+            const userData = await this.userService.fetchById(req.user.id)
+            
+            response.status(200).send({success:true, message:"user fetched successfully", data:userData})
+        } catch (error) {
+            if(error instanceof HttpException) throw error
+            throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+        }
+    }
     @Put('update')
     async updateProfile(@Req() req:any, @Res() response:Response, @Body() user:User){
         try {
             const userData = await this.userService.updateProfile(req.user.id,user)
+            
+            response.status(200).send({success:true, message:"user updated successfully", data:userData})
+        } catch (error) {
+            if(error instanceof HttpException) throw error
+            throw new HttpException(error.message, HttpStatus.NOT_MODIFIED);
+        }
+    }
+    
+    @Put('update/profile_img')
+    async updateProfilePhoto(@UploadedFile() file:Multer.File[],@Req() req:any, @Res() response:Response){
+        try {
+            const userData = await this.userService.updateProfilePhoto(req.user.id,req.files[0].filename)
+            
+            response.status(200).send({success:true, message:"user updated successfully", data:userData})
+        } catch (error) {
+            if(error instanceof HttpException) throw error
+            throw new HttpException(error.message, HttpStatus.NOT_MODIFIED);
+        }
+    }
+    
+    @Put('update/back_img')
+    async updateCoverPhoto(@Req() req:any, @Res() response:Response){
+        try {
+            const userData = await this.userService.updateCoverPhoto(req.user.id,req.files[0].filename)
             
             response.status(200).send({success:true, message:"user updated successfully", data:userData})
         } catch (error) {
