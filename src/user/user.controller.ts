@@ -76,7 +76,6 @@ export class userController {
     async updateProfile(@Req() req:any, @Res() response:Response, @Body() user:User){
         try {
             const userData = await this.userService.updateProfile(req.user.id,user)
-            console.log(userData);
             
             response.status(200).send({success:true, message:"user updated successfully", data:userData})
         } catch (error) {
