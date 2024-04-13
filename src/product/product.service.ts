@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Product } from 'src/data-service/entities/product.entity';
 import { productAsset } from 'src/data-service/entities/productAsset.entity';
-import { Repository } from 'typeorm';
+import { In, Repository } from 'typeorm';
 
 // @Injectable()
 // export class ProductAsset{
@@ -69,13 +69,12 @@ export class ProductService {
   }
   
   async filterByCategory(categories: string[]): Promise<Product[]> {
-    if(categories != null){
-      return await this.productRepository
-      .createQueryBuilder('product')
-      .where('product.cat IN (:...categories)', { categories })
-      .getMany();
-    }
-    return this.getProducts()
+    return await this.productRepository.find({
+      where:{
+        cat: In(categories)
+      },
+      relations:{photos:true}
+    })
   }
 
   async favProduct(id:number):Promise<Product>{

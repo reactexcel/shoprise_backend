@@ -17,7 +17,7 @@ export class ProductController {
       response.status(201).send({success:true, message:'product added successfully', data:productData});
     } catch (error) {
       if (error instanceof HttpException) throw error;
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(error.message, HttpStatus.NOT_ACCEPTABLE);
     }
   }
   
@@ -28,7 +28,7 @@ export class ProductController {
       response.status(201).send({success:true, message:'product fetched successfully', data:products});
     } catch (error) {
       if (error instanceof HttpException) throw error;
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
   }
   
@@ -39,11 +39,11 @@ export class ProductController {
       response.status(201).send({success:true, message:'product fetched successfully', data:productData});
     } catch (error) {
       if (error instanceof HttpException) throw error;
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
   }
  
-  @Get('filter')
+  @Post('filter')
   async filterByCategory(@Req() req:any, @Res() response: Response) {
     let productData
     try {
@@ -55,7 +55,7 @@ export class ProductController {
       response.status(201).send({success:true, message:'product fetched successfully', data:productData});
     } catch (error) {
       if (error instanceof HttpException) throw error;
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
   }
 
@@ -63,10 +63,10 @@ export class ProductController {
   async favProduct(@Res() response:Response, @Param('id', ParseIntPipe) id:number){
     try {
       const productData = await this.productService.favProduct(id);
-      response.status(201).send({success:true, message:'product fetched successfully', data:productData});
+      response.status(201).send({success:true, message:'product favourite/unfavourite chosen', data:productData});
     } catch (error) {
       if (error instanceof HttpException) throw error;
-      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+      throw new HttpException(error.message, HttpStatus.NOT_ACCEPTABLE);
     }
   }
 

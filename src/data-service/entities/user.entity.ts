@@ -27,6 +27,33 @@ export class User {
 
     @Column()
     password: string
+    
+    @Column({default:null})
+    phone?: string
+    
+    @Column({default:null})
+    location?: string
+    
+    @Column({default:null})
+    zipcode?: number
+    
+    @Column({default:null})
+    address?: number
+    
+    @Column({default:null})
+    linkedin?: string
+    
+    @Column({default:null})
+    facebook?: string
+    
+    @Column({default:null})
+    twitter?: string
+    
+    @Column({default:null})
+    instagram?: string
+    
+    @Column({default:null})
+    rating?: string
 
     @Column({ type: 'enum', enum: UserRole, default: UserRole.USER })
     role: UserRole;

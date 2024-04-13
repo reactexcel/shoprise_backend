@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res, HttpException, HttpStatus, UseInterceptors, Put, ValidationPipe, UsePipes} from '@nestjs/common';
+import { Controller, Post, Body, Res, HttpException, HttpStatus, UseInterceptors, Put, ValidationPipe, UsePipes, Req} from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthService } from 'src/auth/auth.service';
 import { Response } from 'express';
@@ -69,6 +69,19 @@ export class userController {
         } catch (error) {
             if(error instanceof HttpException) throw error
             throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Put('update')
+    async updateProfile(@Req() req:any, @Res() response:Response, @Body() user:User){
+        try {
+            const userData = await this.userService.updateProfile(req.user.id,user)
+            console.log(userData);
+            
+            response.status(200).send({success:true, message:"user updated successfully", data:userData})
+        } catch (error) {
+            if(error instanceof HttpException) throw error
+            throw new HttpException(error.message, HttpStatus.NOT_MODIFIED);
         }
     }
 }
