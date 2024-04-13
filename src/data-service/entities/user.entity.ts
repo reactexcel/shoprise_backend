@@ -35,10 +35,10 @@ export class User {
     location?: string
     
     @Column({default:null})
-    zipcode?: number
+    zipcode?: string
     
     @Column({default:null})
-    address?: number
+    address?: string
     
     @Column({default:null})
     linkedin?: string
