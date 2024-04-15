@@ -62,8 +62,8 @@ export class ProductController {
   @Put('favourite/:id')
   async favProduct(@Res() response:Response, @Param('id', ParseIntPipe) id:number){
     try {
-      const productData = await this.productService.favProduct(id);
-      response.status(201).send({success:true, message:'product favourite/unfavourite chosen', data:productData});
+      const msg:string = await this.productService.favProduct(id);      
+      response.status(201).send({success:true, message:msg});
     } catch (error) {
       if (error instanceof HttpException) throw error;
       throw new HttpException(error.message, HttpStatus.NOT_ACCEPTABLE);
