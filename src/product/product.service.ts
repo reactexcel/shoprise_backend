@@ -59,23 +59,15 @@ export class ProductService {
     return savedProduct
   }
   
-  async getProducts(): Promise<{}> {  
+  async getProducts(): Promise<any[]> {  
     const items = await this.productRepository.find({
       relations:{
         photos:true,
       }
     }); 
-    const vehicle = await this.vehicleRepository.find({
-      relations:{
-        vehicleAsset:true,
-      }
-    })
-    const realEstate = await this.realEstateRepository.find({
-      relations:{
-        realEstateAsset:true,
-      }
-    });
-    return {items,vehicle,realEstate}
+    const vehicle = await this.getVehicles()
+    const realEstate = await this.getHomes()
+    return [...items,...vehicle,...realEstate]
   }
   
   async getProduct(id:number): Promise<Product> {
@@ -87,8 +79,28 @@ export class ProductService {
       }
     })
   }
+
+  async getVehicles(): Promise<Vehicle[]> {
+    return await this.vehicleRepository.find({
+      relations:{
+        user:true,
+        vehicleAsset:true
+      }
+    })
+  }
+  async getHomes(): Promise<RealEstate[]> {
+    return await this.realEstateRepository.find({
+      relations:{
+        user:true,
+        realEstateAsset:true
+      }
+    })
+  }
   
   async filterByCategory(categories: string[]): Promise<Product[]> {
+    // if(categories.includes('vehicle')){
+    //   const vehicle = this.findVehicle()
+    // }
     return await this.productRepository.find({
       where:{
         cat: In(categories)
