@@ -1,30 +1,33 @@
 import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, OneToMany, ManyToOne } from "typeorm"
-import { productAsset } from "./productAsset.entity"
 import { User } from "./user.entity"
 import { Order } from "./order.entity"
+import { VehicleAsset } from "./vehicleAsset.entity"
 
 @Entity()
-export class Product {
+export class Vehicle {
     @PrimaryGeneratedColumn()
     id: number
 
     @Column()
-    title: string
+    type: string
+    
+    @Column()
+    location: string
+    
+    @Column()
+    year: string
+
+    @Column()
+    brand: string
+
+    @Column()
+    model: string
     
     @Column()
     desc: string
-
-    @Column()
-    price: string
-
-    @Column()
-    location: string
-
-    @Column()
-    cat: string
     
     @Column()
-    subcat: string
+    price: string
     
     @Column()
     condition: string
@@ -38,13 +41,13 @@ export class Product {
     @Column()
     parentCat:string
     
-    @OneToMany(() => productAsset, (photo) => photo.product)
-    photos?: productAsset[]
+    @OneToMany(() => VehicleAsset, (vehicleAsset) => vehicleAsset.vehicle)
+    vehicleAsset?: VehicleAsset[]
 
-    @ManyToOne(() => User, (user) => user.products)
+    @ManyToOne(() => User, (user) => user.vehicle)
     user: User
     
-    @OneToMany(() => Order, (order) => order.product)
+    @OneToMany(() => Order, (order) => order.vehicle)
     order: Order
 
     @CreateDateColumn()

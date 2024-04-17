@@ -3,6 +3,8 @@ import * as bcrypt from 'bcrypt'
 import { Blog } from "./blog.entity"
 import { Product } from "./product.entity"
 import { Order } from "./order.entity"
+import { Vehicle } from "./vehicle.entity"
+import { RealEstate } from "./realestate.entity"
 
 
  export enum UserRole {
@@ -77,6 +79,12 @@ export class User {
 
     @OneToMany(() => Product, (product) => product.user)
     products?: Product[]
+
+    @OneToMany(() => Vehicle, (vehicle) => vehicle.user)
+    vehicle?: Vehicle[]
+    
+    @OneToMany(() => RealEstate, (realEstate) => realEstate.user)
+    realEstate?: RealEstate[]
     
     @OneToMany(() => Order, (order) => order.user)
     order?: Order[]
