@@ -17,6 +17,9 @@ import { ExcludePasswordInterceptor } from './common/interceptors/exludePassword
 import { OrderModule } from './order/order.module';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { ChatGateway } from './chat/chat.gateway';
+import { ChatService } from './chat/chat.service';
+import { Message } from './data-service/entities/message.entity';
 
 @Module({
   imports: [
@@ -33,7 +36,7 @@ import { join } from 'path';
       DB_NAME: Joi.string().required(),
       }),
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Message]),
     DatabaseModule,
     userModule,
     ProductModule,
@@ -41,7 +44,6 @@ import { join } from 'path';
     AuthModule,
     OrderModule,
   
-    // Serve static files from the 'uploads' folder
     ServeStaticModule.forRoot({
       rootPath: join(__dirname, '..', 'uploads'),
       serveRoot: '/uploads',
@@ -49,7 +51,7 @@ import { join } from 'path';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [ChatGateway ,AppService, ChatService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
