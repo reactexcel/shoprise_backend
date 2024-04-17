@@ -25,18 +25,21 @@ export class Product {
     
     @Column()
     subcat: string
+
+    @Column({default:"product"})
+    parentCat: string
     
     @Column()
     condition: string
 
     @Column()
     userId:string
+
+    @Column({default:"$ 9"})
+    deliveryFee:string
     
     @Column({default:false})
     favourite:boolean
-
-    @Column()
-    parentCat:string
     
     @OneToMany(() => productAsset, (photo) => photo.product)
     photos?: productAsset[]

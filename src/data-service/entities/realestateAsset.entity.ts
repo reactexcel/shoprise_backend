@@ -13,6 +13,6 @@ export class RealEstateAsset {
     @Column({ default: "" })
     url: string
 
-    @ManyToOne(() => RealEstate, (realEstate) => realEstate.realEstateAsset)
+    @ManyToOne(() => RealEstate, (realEstate) => realEstate.photos)
     realEstate: RealEstate
 }

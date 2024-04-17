@@ -32,6 +32,12 @@ export class Vehicle {
     @Column()
     condition: string
 
+    @Column({default:"$ 9"})
+    deliveryFee: string
+
+    @Column({default:"vehicle"})
+    parentCat: string
+
     @Column()
     userId:string
     
@@ -39,10 +45,10 @@ export class Vehicle {
     favourite:boolean
 
     @Column()
-    parentCat:string
+    cat:string
     
     @OneToMany(() => VehicleAsset, (vehicleAsset) => vehicleAsset.vehicle)
-    vehicleAsset?: VehicleAsset[]
+    photos?: VehicleAsset[]
 
     @ManyToOne(() => User, (user) => user.vehicle)
     user: User
