@@ -41,7 +41,7 @@ export class VehicleService {
   async addVehicle(vehicleData: Partial<Vehicle|any>,photos:any,userId:string): Promise<Vehicle>{
     const vehicle = this.vehicleRepository.create({
       userId,
-      parentCat:process.env.PARENT_CAT_V,
+      cat:process.env.PARENT_CAT_V,
       ...vehicleData,
     });
     const savedvehicle = await this.vehicleRepository.save(vehicle);
@@ -54,7 +54,7 @@ export class VehicleService {
   async getVehicles(): Promise<Vehicle[]> {   
     return this.vehicleRepository.find({
       relations:{
-        vehicleAsset:true,
+        photos:true,
       }
     });
   }
@@ -64,7 +64,7 @@ export class VehicleService {
       where:{id},
       relations:{
         user:true,
-        vehicleAsset:true
+        photos:true
       }
     })
   }

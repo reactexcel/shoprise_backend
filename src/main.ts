@@ -1,12 +1,18 @@
 import { NestFactory } from '@nestjs/core';
+import { IoAdapter } from '@nestjs/platform-socket.io';
 import { VersioningType } from '@nestjs/common';
 import { AppModule } from './app.module';
 import { NestExpressApplication } from '@nestjs/platform-express';
 import {DocumentBuilder, SwaggerDocumentOptions,SwaggerModule} from '@nestjs/swagger'
 import { join } from 'path';
+import {Server} from 'socket.io'
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
+
+  // const httpServer = app.getHttpServer();
+  // const io = new Server(httpServer);
+  // app.useWebSocketAdapter(new IoAdapter(io));
 
   const config = new DocumentBuilder()
     .setTitle('SHOP RISE')

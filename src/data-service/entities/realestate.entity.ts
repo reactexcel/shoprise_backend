@@ -57,10 +57,13 @@ export class RealEstate {
     favourite:boolean
     
     @Column()
-    parentCat:string
+    cat:string
+
+    @Column({default:"real-estate"})
+    parentCat: string
     
     @OneToMany(() => RealEstateAsset, (realEstateAsset) => realEstateAsset.realEstate)
-    realEstateAsset?: RealEstateAsset[]
+    photos?: RealEstateAsset[]
 
     @ManyToOne(() => User, (user) => user.realEstate)
     user: User

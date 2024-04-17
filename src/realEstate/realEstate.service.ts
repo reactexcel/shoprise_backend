@@ -26,7 +26,7 @@ export class RealEstateService {
   async addRealEstate(realEstateData: Partial<RealEstate|any>,photos:any,userId:string): Promise<RealEstate>{
     const vehicle = this.realEstateRepository.create({
       userId,
-      parentCat:process.env.PARENT_CAT_H,
+      cat:process.env.PARENT_CAT_H,
       ...realEstateData,
     });
     const savedvehicle = await this.realEstateRepository.save(vehicle);
@@ -39,7 +39,7 @@ export class RealEstateService {
   async getRealEstates(): Promise<RealEstate[]> {   
     return this.realEstateRepository.find({
       relations:{
-        realEstateAsset:true,
+        photos:true,
       }
     });
   }
@@ -49,7 +49,7 @@ export class RealEstateService {
       where:{id},
       relations:{
         user:true,
-        realEstateAsset:true
+        photos:true
       }
     })
   }

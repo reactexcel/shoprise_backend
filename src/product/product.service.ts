@@ -49,7 +49,7 @@ export class ProductService {
   async addProduct(productData: Partial<Product|any>,photos:any,userId:string): Promise<Product>{
     const product = this.productRepository.create({
       userId,
-      parentCat:process.env.PARENT_CAT_P,
+      cat:process.env.PARENT_CAT_P,
       ...productData,
     });
     const savedProduct = await this.productRepository.save(product);
@@ -84,7 +84,7 @@ export class ProductService {
     return await this.vehicleRepository.find({
       relations:{
         user:true,
-        vehicleAsset:true
+        photos:true
       }
     })
   }
@@ -92,21 +92,32 @@ export class ProductService {
     return await this.realEstateRepository.find({
       relations:{
         user:true,
-        realEstateAsset:true
+        photos:true
       }
     })
   }
   
   async filterByCategory(categories: string[]): Promise<Product[]> {
-    // if(categories.includes('vehicle')){
-    //   const vehicle = this.findVehicle()
-    // }
-    return await this.productRepository.find({
+    console.log(categories , categories.includes('vehicle'))
+    let data=[], vehicle , product , home
+    if(categories.includes('vehicle')){
+      vehicle = await this.vehicleRepository.find({relations:{user:true, photos:true}})
+      data = [...vehicle]
+    }
+
+    if(categories.includes('rental')){
+      home = await this.realEstateRepository.find({relations:{user:true, photos:true}})
+      data = [...data, ...home]
+    }
+    
+      product =  await this.productRepository.find({
       where:{
         cat: In(categories)
       },
       relations:{photos:true}
     })
+
+    return [...product , ...data]
   }
 
   async favProduct(id:number):Promise<string>{

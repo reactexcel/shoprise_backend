@@ -19,6 +19,9 @@ import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
 import { VehicleModule } from './vehicle/vehicle.module';
 import { RealEstateModule } from './realEstate/realEstate.module';
+import { ChatGateway } from './chat/chat.gateway';
+import { ChatService } from './chat/chat.service';
+import { Message } from './data-service/entities/message.entity';
 
 @Module({
   imports: [
@@ -35,7 +38,7 @@ import { RealEstateModule } from './realEstate/realEstate.module';
       DB_NAME: Joi.string().required(),
       }),
     }),
-    TypeOrmModule.forFeature([User]),
+    TypeOrmModule.forFeature([User, Message]),
     DatabaseModule,
     userModule,
     ProductModule,
@@ -51,7 +54,7 @@ import { RealEstateModule } from './realEstate/realEstate.module';
     }),
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [ChatGateway ,AppService, ChatService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
