@@ -4,6 +4,7 @@ import { Repository } from 'typeorm';
 import {Blog} from '../data-service/entities/blog.entity';
 import {Multer} from 'multer'
 import { BlogAsset } from 'src/data-service/entities/blogAsset.entity';
+import * as moment from 'moment'
 
 @Injectable()
 export class BlogService{
@@ -14,40 +15,30 @@ export class BlogService{
     private readonly blogAssetRepository: Repository<BlogAsset>,
   ) {}
 
-  async createBlog(blogData:Blog, files:Multer.File[]): Promise<Blog> {
-       const blog =this.blogRepository.create(blogData);
+  async createBlog(blogData:Blog, files:Multer.File[], user:any): Promise<Blog> {
+       const blog =this.blogRepository.create({...blogData, userId:user.id});
        let newBlog = await this.blogRepository.save(blog)
-       const data =  await Promise.all(files.map(async(file) =>{
-          const image = await this.blogAssetRepository.save(this.blogAssetRepository.create({imageUrl:file.filename, blogId:newBlog.id}))
-          return image
-       }))
-
-       newBlog.assets = data
+       if(files){
+         const data = await Promise.all(files.map(async(file) =>{
+               return await this.blogAssetRepository
+               .save(
+                this.blogAssetRepository
+                .create({
+                  imageUrl:`http://116.202.210.102:3000/uploads/${file.filename}`,
+                   blogId:newBlog.id
+                  })
+                )
+         }))
+         newBlog.photos  = data
+       }
        return newBlog;
   }
 
   async fetchAll(): Promise<Blog[]> {
     return this.blogRepository.find(
         {
-            select:{
-                id:true,
-                heading:true,
-                introduction:true,
-                conclusion:true,
-                note:true,
-                category:true,
-                createdAt:true,
-                user:{
-                    id:true,
-                    firstName:true,
-                    lastName:true,
-                },
-                assets:{
-                    id:true,
-                    imageUrl:true
-                }
-              },
-            relations:['user' , 'assets']
+            relations:['user' , 'photos'],
+            where:{status:"published"}
         }
     );
   }
@@ -56,26 +47,36 @@ export class BlogService{
     return this.blogRepository.findOne(
        {
           where:{id},
-          select:{
-            id:true,
-            heading:true,
-            introduction:true,
-            conclusion:true,
-            note:true,
-            createdAt:true,
-            user:{
-                id:true,
-                firstName:true,
-                lastName:true,
-            },
-            assets:{
-                id:true,
-                imageUrl:true
-            }
-          },
           relations:['user', 'assets']
        });
 
+  }
+
+  async getDraftBlog(): Promise<Blog> {
+    const draftBlog =  await this.blogRepository.findOne({
+      where: {
+        status:'draft'
+      },
+    });
+    return draftBlog
+  }
+
+  async getScheduledBlog(): Promise<Blog[]> {
+    const date = moment(new Date());
+    const formatedDate = date.format("YYYY-MM-DD HH:mm")
+    const pendingTasks =  await this.blogRepository.find({
+      where: {
+        scheduledDate: formatedDate,
+        status:'pending'
+      },
+    });
+    return pendingTasks
+  }
+
+  async updateBlog(blogId:number, blogData:Partial<Blog>):Promise<Blog>{
+     const blog = await this.blogRepository.findOne({where:{id:blogId}})
+     const newBlog = this.blogRepository.merge(blog, blogData)
+     return await this.blogRepository.save(newBlog);
   }
 
 }

@@ -22,6 +22,10 @@ import { RealEstateModule } from './realEstate/realEstate.module';
 import { ChatGateway } from './chat/chat.gateway';
 import { ChatService } from './chat/chat.service';
 import { Message } from './data-service/entities/message.entity';
+import { BlogScheduler } from './common/schedular/schedular';
+import { BlogService } from './blog/blog.service';
+import { Blog } from './data-service/entities/blog.entity';
+import { BlogAsset } from './data-service/entities/blogAsset.entity';
 
 @Module({
   imports: [
@@ -38,7 +42,7 @@ import { Message } from './data-service/entities/message.entity';
       DB_NAME: Joi.string().required(),
       }),
     }),
-    TypeOrmModule.forFeature([User, Message]),
+    TypeOrmModule.forFeature([User, Message, Blog, BlogAsset]),
     DatabaseModule,
     userModule,
     ProductModule,
@@ -54,7 +58,7 @@ import { Message } from './data-service/entities/message.entity';
     }),
   ],
   controllers: [AppController],
-  providers: [ChatGateway ,AppService, ChatService],
+  providers: [ChatGateway ,AppService, ChatService, BlogScheduler, BlogService],
 })
 export class AppModule implements NestModule {
   configure(consumer: MiddlewareConsumer) {
@@ -74,7 +78,8 @@ export class AppModule implements NestModule {
       {path: 'v1/user/get', method: RequestMethod.GET},
       {path: 'v1/user/update/profile_img', method: RequestMethod.PUT},
       {path: 'v1/user/update/back_img', method: RequestMethod.PUT},
-      {path: 'v1/order/place/:id', method: RequestMethod.POST}
+      {path: 'v1/order/place/:id', method: RequestMethod.POST},
+      {path: 'v1/blog/post', method: RequestMethod.POST},
     );
   }
 }

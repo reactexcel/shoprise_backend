@@ -14,10 +14,22 @@ export class Blog {
     introduction: string
 
     @Column({default:""})
+    about: string
+
+    @Column({default:null})
+    location: string
+
+    @Column({default:""})
     conclusion: string
 
     @Column({default:""})
     note:string
+
+    @Column({default:null})
+    scheduledDate:string
+
+    @Column({default:"pending"})
+    status:string
     
     @Column({default:""})
     category: string
@@ -32,5 +44,5 @@ export class Blog {
     user:User
 
     @OneToMany(() => BlogAsset, (blogAsset)=>blogAsset.blog)
-    assets:BlogAsset[]
+    photos:BlogAsset[]
 }

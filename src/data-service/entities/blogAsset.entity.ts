@@ -12,7 +12,7 @@ export class BlogAsset{
     @Column()
     blogId:number
 
-    @ManyToOne(()=>Blog, (blog) => blog.assets)
+    @ManyToOne(()=>Blog, (blog) => blog.photos)
     blog:Blog
 
 }

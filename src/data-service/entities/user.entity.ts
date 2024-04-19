@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, CreateDateColumn, UpdateDateColumn, OneToMany, JoinTable } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, BeforeInsert, CreateDateColumn, UpdateDateColumn, OneToMany, JoinTable, OneToOne } from "typeorm"
 import * as bcrypt from 'bcrypt'
 import { Blog } from "./blog.entity"
 import { Product } from "./product.entity"
@@ -86,6 +86,6 @@ export class User {
     @OneToMany(() => RealEstate, (realEstate) => realEstate.user)
     realEstate?: RealEstate[]
     
-    @OneToMany(() => Order, (order) => order.user)
+    @OneToMany(() => Order, (order) => order.buyer)
     order?: Order[]
 }

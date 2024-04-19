@@ -10,14 +10,17 @@ export class RealEstate {
 
     @Column()
     type: string
+
+    @Column()
+    title: string
     
     @Column()
     saleOrRent: string
     
-    @Column()
+    @Column({default:"1"})
     rooms: string
 
-    @Column()
+    @Column({default:"0"})
     bathRooms: string
 
     @Column()

@@ -10,9 +10,15 @@ export class vehicleController {
 
   @Post('add')
   async addVehicle(@UploadedFile() file:Multer.File[], @Req() req:any,  @Res() response:Response) {
+    const {model, brand, year} = req.body
     try {      
-      const vehicleData = await this.vehicleService.addVehicle(req.body,req.files,req.user);
-
+      const vehicleData = await this.vehicleService.addVehicle(
+        {
+        ...req.body,
+         title:brand+" "+model+" "+year
+        },
+        req.files,req.user
+      );
       response.status(201).send({success:true, message:'vehicle added successfully', data:vehicleData});
     } catch (error) {
       if (error instanceof HttpException) throw error;
