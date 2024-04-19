@@ -26,7 +26,6 @@ import {Multer} from 'multer'
 // import { CustomRequest } from 'src/common/middleware/verifyUser';
 
 @Controller('blog')
-@ApiTags('user')
 export class BlogController {
   constructor(
     private readonly blogService: BlogService,
@@ -34,11 +33,12 @@ export class BlogController {
 
 
    @Post('post')
-    async postBlog(@Body() createBlogDto:Blog, @Req() req:any, @UploadedFiles() assets:Multer.File[], @Res() response:Response){
+    async postBlog(@Req() req:any,  @Res() response:Response){
         try{ 
-          const blogData = await this.blogService.createBlog({...createBlogDto , userId:req.user.id}, assets);
+          const blogData = await this.blogService.createBlog(req.body,req.files,req.user);
           response.status(201).send({success:true, data:blogData})
         }catch(error){
+            console.log(error, "errrr")
           if(error instanceof HttpException) throw error;
           throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -50,6 +50,17 @@ export class BlogController {
         try{
             const blogs = await this.blogService.fetchAll()
             response.status(200).send({success:true,data:blogs,})    
+        }catch(error){
+            if(error instanceof HttpException) throw error
+            throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
+    @Get('draft/:id')
+    async getDraftBlog(@Res() response:Response){
+        try{
+            const blogs = await this.blogService.getDraftBlog
+            response.status(200).send({success:true,data:blogs})    
         }catch(error){
             if(error instanceof HttpException) throw error
             throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);

@@ -7,11 +7,15 @@ import {Multer} from 'multer'
 @Controller('real-estate')
 export class RealEstateController {
   constructor(private readonly realEstateService: RealEstateService) {}
-
   @Post('add')
   async addRealEstate(@UploadedFile() file:Multer.File[], @Req() req:any,  @Res() response:Response) {
+    const { rooms, bathRooms} = req.body
     try {      
-      const vehicleData = await this.realEstateService.addRealEstate(req.body,req.files,req.user);
+      const vehicleData = await this.realEstateService.addRealEstate(
+        {...req.body, title:rooms+" Rooms "+bathRooms+" Bathrooms"},
+        req.files,
+        req.user
+      );
 
       response.status(201).send({success:true, message:'Home added successfully', data:vehicleData});
     } catch (error) {

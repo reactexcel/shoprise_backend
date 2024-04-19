@@ -1,4 +1,4 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, JoinTable } from "typeorm"
+import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, UpdateDateColumn, ManyToOne, OneToMany, JoinTable, OneToOne, JoinColumn } from "typeorm"
 import { Product } from "./product.entity"
 import { User } from "./user.entity"
 import { Vehicle } from "./vehicle.entity"
@@ -9,17 +9,26 @@ export class Order {
     @PrimaryGeneratedColumn()
     id: number
 
-    @Column()
+    @Column({nullable:true})
     productId: number
+
+    @Column({nullable:true})
+    vehicleId: number
+
+    @Column({nullable:true})
+    realEstateId: number
     
     @Column()
-    userId: number
+    buyerId: number
 
     @Column()
     address: string
 
     @Column()
     total: string
+
+    @Column({default:"$ 0"})
+    offerApplied: string
 
     @Column({default:"pending"})
     fulfilment:string
@@ -44,5 +53,6 @@ export class Order {
     
 
     @ManyToOne(() => User, (user) => user.order)
-    user: User
+    buyer: User
+    
 }

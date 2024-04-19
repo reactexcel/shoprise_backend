@@ -10,6 +10,9 @@ export class Vehicle {
 
     @Column()
     type: string
+
+    @Column()
+    title: string
     
     @Column()
     location: string

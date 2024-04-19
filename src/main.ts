@@ -6,6 +6,7 @@ import { NestExpressApplication } from '@nestjs/platform-express';
 import {DocumentBuilder, SwaggerDocumentOptions,SwaggerModule} from '@nestjs/swagger'
 import { join } from 'path';
 import {Server} from 'socket.io'
+import { BlogScheduler } from './common/schedular/schedular';
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
@@ -13,6 +14,9 @@ async function bootstrap() {
   // const httpServer = app.getHttpServer();
   // const io = new Server(httpServer);
   // app.useWebSocketAdapter(new IoAdapter(io));
+
+  const scheduler = app.get(BlogScheduler);
+  scheduler.startScheduler();
 
   const config = new DocumentBuilder()
     .setTitle('SHOP RISE')
