@@ -1,48 +1,62 @@
-import { Entity, PrimaryGeneratedColumn, Column, CreateDateColumn, ManyToOne, OneToMany} from "typeorm"
-import { User } from "./user.entity"
-import { BlogAsset } from "./blogAsset.entity"
+import {
+  Entity,
+  PrimaryGeneratedColumn,
+  Column,
+  CreateDateColumn,
+  ManyToOne,
+  OneToMany,
+} from 'typeorm';
+import { User } from './user.entity';
+import { BlogAsset } from './blogAsset.entity';
+import { Comment } from './comment.entity';
 
 @Entity()
 export class Blog {
-    @PrimaryGeneratedColumn()
-    id?: number
+  @PrimaryGeneratedColumn()
+  id?: number;
 
-    @Column()
-    heading: string
+  @Column()
+  heading: string;
 
-    @Column({default:""})
-    introduction: string
+  @Column({ default: '' })
+  introduction: string;
 
-    @Column({default:""})
-    about: string
+  @Column({ default: '' })
+  about: string;
 
-    @Column({default:null})
-    location: string
+  @Column({ default: null })
+  location: string;
 
-    @Column({default:""})
-    conclusion: string
+  @Column({ default: '' })
+  conclusion: string;
 
-    @Column({default:""})
-    note:string
+  @Column({ default: '' })
+  note: string;
 
-    @Column({default:null})
-    scheduledDate:string
+  @Column({ default: null })
+  scheduledDate: string;
 
-    @Column({default:"pending"})
-    status:string
-    
-    @Column({default:""})
-    category: string
+  @Column({ default: 'pending' })
+  status: string;
 
-    @CreateDateColumn()
-    createdAt?:Date;
+  @Column({ default: '' })
+  category: string;
 
-    @Column()
-    userId: number
+  @CreateDateColumn()
+  createdAt?: Date;
 
-    @ManyToOne(() => User, (user)=> user.blog )
-    user:User
+  @Column()
+  userId: number;
 
-    @OneToMany(() => BlogAsset, (blogAsset)=>blogAsset.blog)
-    photos:BlogAsset[]
+  @Column({ default: false })
+  commentStatus: boolean;
+
+  @ManyToOne(() => User, (user) => user.blog)
+  user: User;
+
+  @OneToMany(() => BlogAsset, (blogAsset) => blogAsset.blog)
+  photos: BlogAsset[];
+
+  @OneToMany(() => Comment, (comment) => comment.blog)
+  comments?: Comment[];
 }
