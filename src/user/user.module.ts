@@ -6,21 +6,12 @@ import { UserService } from './user.service';
 import {User} from '../data-service/entities/user.entity'
 import { AuthService } from 'src/auth/auth.service';
 import { MulterMiddleware } from 'src/common/middleware/multer.middleware';
-// import { DatabaseModule } from './database.module';
-// import { UserRepoProvider } from '../providers/userRepo.provider';
-// import { ProfileRepoProvider } from '../providers/profileRepo.provider';
-// import { AssetsRepoProvider } from '../providers/assetsRepo.provider';
-// import { MulterMiddleware } from '../common/middlewares/multer.middleware';
-// import { ActivityRepoProvider } from '../providers/activityRepo.provider';
+import { SellerRating } from 'src/data-service/entities/sellerRating.entity';
 
 @Module({
-  imports: [ConfigModule ,TypeOrmModule.forFeature([User])],
+  imports: [ConfigModule ,TypeOrmModule.forFeature([User, SellerRating])],
   controllers:[userController],
   providers:[
-    // ...UserRepoProvider,
-    // ...ProfileRepoProvider,
-    // ...AssetsRepoProvider,
-    // ...ActivityRepoProvider,
     UserService,
     {
       provide: 'SECRET_KEY',
@@ -30,10 +21,6 @@ import { MulterMiddleware } from 'src/common/middleware/multer.middleware';
     AuthService
 ],
   exports:[
-    // ...UserRepoProvider,
-    // ...ProfileRepoProvider,
-    // ...AssetsRepoProvider,
-    // ...ActivityRepoProvider,
     UserService
 ]
 })

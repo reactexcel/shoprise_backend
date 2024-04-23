@@ -18,7 +18,7 @@ export class Blog {
   @Column()
   heading: string;
 
-  @Column({ default: '' })
+  @Column({ default: ''})
   introduction: string;
 
   @Column({ default: '' })

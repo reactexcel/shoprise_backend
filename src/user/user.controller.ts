@@ -1,4 +1,4 @@
-import { Controller, Post, Body, Res, HttpException, HttpStatus, UseInterceptors, Put, ValidationPipe, UsePipes, Req, Get, UploadedFile} from '@nestjs/common';
+import { Controller, Post, Body, Res, HttpException, HttpStatus, UseInterceptors, Put, ValidationPipe, UsePipes, Req, Get, UploadedFile, Param} from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthService } from 'src/auth/auth.service';
 import { Response } from 'express';
@@ -26,7 +26,7 @@ export class userController {
    @Post('signup')
    @UseInterceptors(ExistenceCheckInterceptor)
    @ApiResponse({ status: 201, description: 'User signup', type: UserResponseDto })
-    async signup(@Body() user:CreateUserDto, @Res() response:Response) {
+    async signup(@Body() user:User, @Res() response:Response) {
         try{
           const {password, ...restData} = await this.userService.createUser(user);
           response.status(201).send({success:true, message:SIGNUP_SUCCESSFULLY, data:restData})
@@ -115,6 +115,18 @@ export class userController {
             const userData = await this.userService.updateCoverPhoto(req.user.id,req.files[0].filename)
             
             response.status(200).send({success:true, message:"user updated successfully", data:userData})
+        } catch (error) {
+            if(error instanceof HttpException) throw error
+            throw new HttpException(error.message, HttpStatus.NOT_MODIFIED);
+        }
+    }
+
+    @Post('rating/:id')
+    async addRating( @Param() param:{id:string} ,@Req() req:any, @Res() response:Response){
+        const {rating} = req.body;
+        try {
+            const userData = await this.userService.createRating(+param.id, {rating})
+            response.status(200).send({success:true, message:"rating added successfully"})
         } catch (error) {
             if(error instanceof HttpException) throw error
             throw new HttpException(error.message, HttpStatus.NOT_MODIFIED);

@@ -2,6 +2,7 @@ import { Injectable, Inject } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import {User} from '../data-service/entities/user.entity';
+import { SellerRating } from 'src/data-service/entities/sellerRating.entity';
 
 @Injectable()
 export class UserService{
@@ -9,6 +10,9 @@ export class UserService{
     // @Inject('USER_REPOSITORY') private userRepository: Repository<User>,
     @InjectRepository(User)
     private readonly userRepository: Repository<User>,
+
+    @InjectRepository(SellerRating)
+    private readonly sellerRatingRepository: Repository<SellerRating>,
   ) {}
 
   async createUser(userData:User): Promise<User> {
@@ -21,7 +25,7 @@ export class UserService{
   }
 
   async fetchOne(field:string): Promise<User> {
-    return this.userRepository.findOne({where:{email:field}});
+    return this.userRepository.findOne({where:{email:field}, relations:{ratingRec:true}});
   }
 
   async fetchById(id:number): Promise<User> {
@@ -52,6 +56,14 @@ export class UserService{
   async updateCoverPhoto(id:number,path:string):Promise<User|null>{
     await this.userRepository.update(id,{coverPhoto:"http://116.202.210.102:3000/uploads/"+path})
     return this.fetchById(id)
+  }
+
+  async createRating(id:number,data:Partial<SellerRating>):Promise<SellerRating>{
+   const rating = await this.sellerRatingRepository.findOne({where:{id}})
+   if(rating){
+      return await this.sellerRatingRepository.save(this.sellerRatingRepository.merge(rating, data))
+   }
+    return this.sellerRatingRepository.save(this.sellerRatingRepository.create(data))
   }
   // async updateProfileImg(id:number ,profileImgPath:string): Promise<Iassets> {
   //   const assets = await this.assetsRepository.findOne({where:{id}});
