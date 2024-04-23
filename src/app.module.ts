@@ -82,6 +82,7 @@ export class AppModule implements NestModule {
         { path: 'v1/real-estate/add', method: RequestMethod.POST },
         { path: 'v1/user/update', method: RequestMethod.PUT },
         { path: 'v1/user/get', method: RequestMethod.GET },
+        { path: 'v1/user/send-message', method: RequestMethod.POST },
         { path: 'v1/user/update/profile_img', method: RequestMethod.PUT },
         { path: 'v1/user/update/back_img', method: RequestMethod.PUT },
         { path: 'v1/order/place/:id', method: RequestMethod.POST },
