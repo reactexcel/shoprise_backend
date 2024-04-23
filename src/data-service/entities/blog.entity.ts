@@ -15,22 +15,22 @@ export class Blog {
   @PrimaryGeneratedColumn()
   id?: number;
 
-  @Column()
+  @Column({ default: '' })
   heading: string;
 
-  @Column({ default: ''})
+  @Column({ default: '', length: 5000 })
   introduction: string;
 
-  @Column({ default: '' })
+  @Column({ default: '', length: 2000 })
   about: string;
 
   @Column({ default: null })
   location: string;
 
-  @Column({ default: '' })
+  @Column({ default: '', length: 2000 })
   conclusion: string;
 
-  @Column({ default: '' })
+  @Column({ default: '', length: 5000 })
   note: string;
 
   @Column({ default: null })
