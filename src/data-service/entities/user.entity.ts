@@ -16,6 +16,7 @@ import { Order } from './order.entity';
 import { Vehicle } from './vehicle.entity';
 import { RealEstate } from './realestate.entity';
 import { Comment } from './comment.entity';
+import { SellerRating } from './sellerRating.entity';
 
 export enum UserRole {
   ADMIN = 'ADMIN',
@@ -99,4 +100,10 @@ export class User {
 
   @OneToMany(() => Order, (order) => order.buyer)
   order?: Order[];
+
+  @OneToMany(() => SellerRating, (sellerRating) => sellerRating.seller)
+  ratingRec:SellerRating
+
+  @OneToMany(() => SellerRating, (sellerRating) => sellerRating.buyer)
+  ratingCont:SellerRating
 }
