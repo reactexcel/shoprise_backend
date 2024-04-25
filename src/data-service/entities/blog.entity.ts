@@ -48,8 +48,8 @@ export class Blog {
   @Column()
   userId: number;
 
-  @Column({ default: false })
-  commentStatus: boolean;
+  @Column({ default: 'false' })
+  commentStatus: string;
 
   @ManyToOne(() => User, (user) => user.blog)
   user: User;

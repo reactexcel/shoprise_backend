@@ -239,7 +239,25 @@ export class userController {
     }
   }
 
-  @Get('get/:receiverId')
+  @Get('chat/all-receiver-names')
+  async getAllReceiver(@Req() req: any, @Res() response: Response) {
+    try {
+      const userData = await this.userService.fetchById(req.user.id);
+
+      const receiverNames = await this.userService.fetchAllReceiver(
+        userData.id,
+      );
+      response.status(200).send({
+        success: true,
+        message: 'user receiver list fetched successfully',
+        receiver: receiverNames,
+      });
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
+  }
+  @Get('chat/:receiverId')
   async fetchMessage(
     @Req() req: any,
     @Res() response: Response,
@@ -247,15 +265,11 @@ export class userController {
   ) {
     try {
       const userData = await this.userService.fetchById(req.user.id);
-      const receiverData = await this.userService.fetchById(receiverId);
-
-      console.log(req.user.id, receiverId, receiverData);
 
       const messages = await this.chatService.getMessages(
         userData.id,
         receiverId,
       );
-      console.log(messages);
       response.status(200).send({
         success: true,
         message: 'user message fetched successfully',
