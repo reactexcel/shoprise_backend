@@ -23,7 +23,7 @@ import { RealEstate } from 'src/data-service/entities/realestate.entity';
 // }
 
 @Injectable()
-export class ProductService { 
+export class ProductService {
   constructor(
     @InjectRepository(Product)
     private readonly productRepository: Repository<Product>,
@@ -32,117 +32,130 @@ export class ProductService {
     @InjectRepository(Vehicle)
     private readonly vehicleRepository: Repository<Vehicle>,
     @InjectRepository(RealEstate)
-    private readonly realEstateRepository: Repository<RealEstate>
+    private readonly realEstateRepository: Repository<RealEstate>,
   ) {}
 
-
-  async addProductAsset(urls:{filename:string}[],id:number): Promise<any> {
-
-    const filenames = urls.map(url => url.filename);
+  async addProductAsset(
+    urls: { filename: string }[],
+    id: number,
+  ): Promise<any> {
+    const filenames = urls.map((url) => url.filename);
     let query = 'INSERT INTO product_asset (url, productId) VALUES ';
-    const valueStrings = filenames.map(filename => `('http://116.202.210.102:3000/uploads/${filename}', '${id}')`);
+    const valueStrings = filenames.map(
+      (filename) =>
+        `('http://116.202.210.102:3000/uploads/${filename}', '${id}')`,
+    );
     query += valueStrings.join(', ');
 
-    return this.productAssetRepository.query(query)
+    return this.productAssetRepository.query(query);
   }
 
-  async addProduct(productData: Partial<Product|any>,photos:any,userId:string): Promise<Product>{
+  async addProduct(
+    productData: Partial<Product | any>,
+    photos: any,
+    userId: string,
+  ): Promise<Product> {
     const product = this.productRepository.create({
       userId,
-      cat:process.env.PARENT_CAT_P,
       ...productData,
     });
     const savedProduct = await this.productRepository.save(product);
-    
-    await this.addProductAsset(photos,savedProduct.id); //calling product asset method
 
-    return savedProduct
+    await this.addProductAsset(photos, savedProduct.id); //calling product asset method
+
+    return savedProduct;
   }
-  
-  async getProducts(): Promise<any[]> {  
+
+  async getProducts(): Promise<any[]> {
     const items = await this.productRepository.find({
-      relations:{
-        photos:true,
-      }
-    }); 
-    const vehicle = await this.getVehicles()
-    const realEstate = await this.getHomes()
-    return [...items,...vehicle,...realEstate]
+      relations: {
+        photos: true,
+      },
+    });
+    const vehicle = await this.getVehicles();
+    const realEstate = await this.getHomes();
+    return [...items, ...vehicle, ...realEstate];
   }
-  
-  async getProduct(id:number): Promise<Product> {
+
+  async getProduct(id: number): Promise<Product> {
     return this.productRepository.findOne({
-      where:{id},
-      relations:{
-        user:true,
-        photos:true
-      }
-    })
+      where: { id },
+      relations: {
+        user: true,
+        photos: true,
+      },
+    });
   }
 
   async getVehicles(): Promise<Vehicle[]> {
     return await this.vehicleRepository.find({
-      relations:{
-        user:true,
-        photos:true
-      }
-    })
+      relations: {
+        user: true,
+        photos: true,
+      },
+    });
   }
   async getHomes(): Promise<RealEstate[]> {
     return await this.realEstateRepository.find({
-      relations:{
-        user:true,
-        photos:true
-      }
-    })
-  }
-  
-  async filterByCategory(categories: string[]): Promise<Product[]> {
-    console.log(categories , categories.includes('vehicle'))
-    let data=[], vehicle , product , home
-    if(categories.includes('vehicle')){
-      vehicle = await this.vehicleRepository.find({relations:{user:true, photos:true}})
-      data = [...vehicle]
-    }
-
-    if(categories.includes('rental')){
-      home = await this.realEstateRepository.find({relations:{user:true, photos:true}})
-      data = [...data, ...home]
-    }
-    
-      product =  await this.productRepository.find({
-      where:{
-        cat: In(categories)
+      relations: {
+        user: true,
+        photos: true,
       },
-      relations:{photos:true}
-    })
-
-    return [...product , ...data]
+    });
   }
 
-  async favProduct(id:number):Promise<string>{
-    const productData = await this.productRepository.findOne({where:{id}})
+  async filterByCategory(categories: string[]): Promise<Product[]> {
+    console.log(categories, categories.includes('vehicle'));
+    let data = [],
+      vehicle,
+      product,
+      home;
+    if (categories.includes('vehicle')) {
+      vehicle = await this.vehicleRepository.find({
+        relations: { user: true, photos: true },
+      });
+      data = [...vehicle];
+    }
 
-    const q1 = `UPDATE product SET favourite = false WHERE id = ?`
-    const q2 = `UPDATE product SET favourite = true WHERE id = ?`
+    if (categories.includes('rental')) {
+      home = await this.realEstateRepository.find({
+        relations: { user: true, photos: true },
+      });
+      data = [...data, ...home];
+    }
 
-    if(productData.favourite){
-      await this.productRepository.query(q1,[id])
-      return "item removed from the favourite list"
-    }else{
-      await this.productRepository.query(q2,[id])
-      return "item added in the favourite list"
+    product = await this.productRepository.find({
+      where: {
+        cat: In(categories),
+      },
+      relations: { photos: true },
+    });
+
+    return [...product, ...data];
+  }
+
+  async favProduct(id: number): Promise<string> {
+    const productData = await this.productRepository.findOne({ where: { id } });
+
+    const q1 = `UPDATE product SET favourite = false WHERE id = ?`;
+    const q2 = `UPDATE product SET favourite = true WHERE id = ?`;
+
+    if (productData.favourite) {
+      await this.productRepository.query(q1, [id]);
+      return 'item removed from the favourite list';
+    } else {
+      await this.productRepository.query(q2, [id]);
+      return 'item added in the favourite list';
     }
   }
 
-  async queryProduct(message:string,id:number,userId):Promise<string>{
+  async queryProduct(message: string, id: number, userId): Promise<string> {
     console.log({
       id,
       message,
-      userId
+      userId,
     });
-    
-    return "inside query product"
+
+    return 'inside query product';
   }
 }
-

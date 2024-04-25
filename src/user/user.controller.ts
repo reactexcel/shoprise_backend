@@ -13,6 +13,7 @@ import {
   Get,
   UploadedFile,
   Param,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthService } from 'src/auth/auth.service';
@@ -36,6 +37,7 @@ import { UserResponseDto } from './dto/user-response-dto';
 import { ResetPasswordIncomingDto } from './dto/reset-password-incoming-dto';
 import { Multer } from 'multer';
 import { mailSender } from 'src/common/helper/mailSender';
+import { ChatService } from 'src/chat/chat.service';
 
 @Controller('user')
 @ApiTags('user')
@@ -43,6 +45,7 @@ export class userController {
   constructor(
     private readonly userService: UserService,
     private readonly authService: AuthService,
+    private readonly chatService: ChatService,
   ) {}
 
   @Post('signup')
@@ -233,6 +236,35 @@ export class userController {
     } catch (error) {
       if (error instanceof HttpException) throw error;
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Get('get/:receiverId')
+  async fetchMessage(
+    @Req() req: any,
+    @Res() response: Response,
+    @Param('receiverId', ParseIntPipe) receiverId: number,
+  ) {
+    try {
+      const userData = await this.userService.fetchById(req.user.id);
+      const receiverData = await this.userService.fetchById(receiverId);
+
+      console.log(req.user.id, receiverId, receiverData);
+
+      const messages = await this.chatService.getMessages(
+        userData.id,
+        receiverId,
+      );
+      console.log(messages);
+      response.status(200).send({
+        success: true,
+        message: 'user message fetched successfully',
+        data: userData,
+        messages: messages,
+      });
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
   }
 }
