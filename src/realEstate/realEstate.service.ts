@@ -5,7 +5,7 @@ import { RealEstateAsset } from 'src/data-service/entities/realestateAsset.entit
 import { In, Repository } from 'typeorm';
 
 @Injectable()
-export class RealEstateService { 
+export class RealEstateService {
   constructor(
     @InjectRepository(RealEstate)
     private readonly realEstateRepository: Repository<RealEstate>,
@@ -13,60 +13,70 @@ export class RealEstateService {
     private readonly realEstateAssetRepository: Repository<RealEstateAsset>,
   ) {}
 
-  async addRealEstateAsset(urls:{filename:string}[],id:number): Promise<any> {
-
-    const filenames = urls.map(url => url.filename);
+  async addRealEstateAsset(
+    urls: { filename: string }[],
+    id: number,
+  ): Promise<any> {
+    const filenames = urls.map((url) => url.filename);
     let query = 'INSERT INTO real_estate_asset (url, realEstateId) VALUES ';
-    const valueStrings = filenames.map(filename => `('http://116.202.210.102:3000/uploads/${filename}', '${id}')`);
+    const valueStrings = filenames.map(
+      (filename) =>
+        `('http://116.202.210.102:3000/uploads/${filename}', '${id}')`,
+    );
     query += valueStrings.join(', ');
 
-    return this.realEstateAssetRepository.query(query)
+    return this.realEstateAssetRepository.query(query);
   }
 
-  async addRealEstate(realEstateData: Partial<RealEstate|any>,photos:any,userId:string): Promise<RealEstate>{
+  async addRealEstate(
+    realEstateData: Partial<RealEstate | any>,
+    photos: any,
+    userId: string,
+  ): Promise<RealEstate> {
     const vehicle = this.realEstateRepository.create({
       userId,
-      cat:process.env.PARENT_CAT_H,
+      cat: process.env.PARENT_CAT_H,
       ...realEstateData,
     });
     const savedvehicle = await this.realEstateRepository.save(vehicle);
-    
-    await this.addRealEstateAsset(photos,savedvehicle.id); //calling vehicle asset method
 
-    return savedvehicle
+    await this.addRealEstateAsset(photos, savedvehicle.id); //calling vehicle asset method
+
+    return savedvehicle;
   }
-  
-  async getRealEstates(): Promise<RealEstate[]> {   
+
+  async getRealEstates(): Promise<RealEstate[]> {
     return this.realEstateRepository.find({
-      relations:{
-        photos:true,
-      }
+      relations: {
+        photos: true,
+      },
     });
   }
-  
-  async getRealEstate(id:number): Promise<RealEstate> {
+
+  async getRealEstate(id: number): Promise<RealEstate> {
     return this.realEstateRepository.findOne({
-      where:{id},
-      relations:{
-        user:true,
-        photos:true
-      }
-    })
+      where: { id },
+      relations: {
+        user: true,
+        photos: true,
+      },
+    });
   }
 
-  async favRealEstate(id:number):Promise<string>{
-    const vehicleData = await this.realEstateRepository.findOne({where:{id}})
+  async favRealEstate(id: number): Promise<string> {
+    const vehicleData = await this.realEstateRepository.findOne({
+      where: { id },
+    });
 
-    const q1 = `UPDATE vehicle SET favourite = false WHERE id = ?`
-    const q2 = `UPDATE vehicle SET favourite = true WHERE id = ?`
+    const q1 = `UPDATE real_estate SET favourite = false WHERE id = ?`;
+    const q2 = `UPDATE real_estate SET favourite = true WHERE id = ?`;
 
-    if(vehicleData.favourite){
-      await this.realEstateRepository.query(q1,[id])
-      return "item removed from the favourite list"
-    }else{
-      await this.realEstateRepository.query(q2,[id])
-      return "item added in the favourite list"
+    if (vehicleData.favourite) {
+      await this.realEstateRepository.query(q1, [id]);
+      return 'item removed from the favourite list';
+    } else {
+      await this.realEstateRepository.query(q2, [id]);
+      return 'item added in the favourite list';
     }
   }
 }
-

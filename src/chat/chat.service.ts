@@ -7,22 +7,19 @@ import { MessagePayloadDto } from './dto/messagePayload.dto';
 
 @Injectable()
 export class ChatService {
-    constructor(
-        @InjectRepository(Message)
-        private messageRepository: Repository<Message>,
-    ) {}
+  constructor(
+    @InjectRepository(Message)
+    private messageRepository: Repository<Message>,
+  ) {}
 
-    async saveMessage(messageData:MessagePayloadDto): Promise<Message> {
-        const newMessage = this.messageRepository.create(messageData);
-        return await this.messageRepository.save(newMessage);
-    }
+  async saveMessage(messageData: MessagePayloadDto): Promise<Message> {
+    const newMessage = this.messageRepository.create(messageData);
+    return await this.messageRepository.save(newMessage);
+  }
 
-    async getMessages(senderId: number, recipientId: number): Promise<Message[]> {
-        return await this.messageRepository.find({
-            where: [
-                { senderId, recipientId },
-                { senderId: recipientId, recipientId: senderId },
-            ],
-        });
-    }
+  async getMessages(senderId: number, recipientId: number): Promise<Message[]> {
+    return await this.messageRepository.find({
+      where: [{ senderId, recipientId }],
+    });
+  }
 }
