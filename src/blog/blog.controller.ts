@@ -97,7 +97,7 @@ export class BlogController {
   ) {
     try {
       const blog = await this.blogService.fetchById(+blogId.id);
-      if (blog.commentStatus !== true) {
+      if (blog.commentStatus !== 'true') {
         return response
           .status(400)
           .send({ success: false, message: 'Comment Disabled for this post' });
