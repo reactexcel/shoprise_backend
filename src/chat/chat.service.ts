@@ -19,7 +19,10 @@ export class ChatService {
 
   async getMessages(senderId: number, recipientId: number): Promise<Message[]> {
     return await this.messageRepository.find({
-      where: [{ senderId, recipientId }],
+      where: [
+        { senderId: senderId, recipientId: recipientId },
+        { senderId: recipientId, recipientId: senderId },
+      ],
     });
   }
 }
