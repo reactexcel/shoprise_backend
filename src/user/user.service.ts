@@ -91,6 +91,7 @@ export class UserService {
       .createQueryBuilder('subquery')
       .select('MAX(subquery.createdAt)', 'maxCreatedAt')
       .addSelect('subquery.recipientId', 'recipientId')
+      .addSelect('MAX(subquery.createdAt)', 'lastMessageTime')
       .where('subquery.senderId = :id', { id })
       .groupBy('subquery.recipientId')
       .getQuery();
@@ -98,16 +99,22 @@ export class UserService {
     const messages = await this.messageRepository
       .createQueryBuilder('message')
       .select(['message.recipientId', 'message.message'])
+      .addSelect('user.firstName', 'firstName')
+      .addSelect('user.lastName', 'lastName')
+      .addSelect('user.profilePhoto', 'profilePhoto')
+      .addSelect('sub.lastMessageTime')
       .innerJoin(
         `(${subQuery})`,
         'sub',
         'sub.recipientId = message.recipientId AND sub.maxCreatedAt = message.createdAt',
       )
+      .innerJoin('User', 'user', 'user.id = message.recipientId')
       .where('message.senderId = :id', { id })
       .getRawMany();
 
     return messages;
   }
+
   // async updateProfileImg(id:number ,profileImgPath:string): Promise<Iassets> {
   //   const assets = await this.assetsRepository.findOne({where:{id}});
   //   if (assets.userProfile!=='' && fs.existsSync(`src/uploads/${assets.userProfile}`))

@@ -264,16 +264,18 @@ export class userController {
     @Param('receiverId', ParseIntPipe) receiverId: number,
   ) {
     try {
-      const userData = await this.userService.fetchById(req.user.id);
+      const senderData = await this.userService.fetchById(req.user.id);
+      const reciverData = await this.userService.fetchById(receiverId);
 
       const messages = await this.chatService.getMessages(
-        userData.id,
+        senderData.id,
         receiverId,
       );
       response.status(200).send({
         success: true,
         message: 'user message fetched successfully',
-        data: userData,
+        senderData: senderData,
+        reciverData: reciverData,
         messages: messages,
       });
     } catch (error) {

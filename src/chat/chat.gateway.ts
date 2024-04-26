@@ -10,8 +10,9 @@ import { Server, Socket } from 'socket.io';
 import { ChatService } from './chat.service';
 import { MessagePayloadDto } from './dto/messagePayload.dto';
 import { AuthService } from 'src/auth/auth.service';
+import { Logger } from '@nestjs/common';
 
-@WebSocketGateway()
+@WebSocketGateway({ cors: true })
 export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   constructor(
     private chatService: ChatService,
@@ -21,10 +22,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   @WebSocketServer() server: Server;
 
   handleConnection(client: Socket) {
-    const token = client.handshake.headers?.authorization.split(' ')[1];
-    const decodedData = this.authService.verifyJwtToken(token);
-    client.join(decodedData.id.toString());
-    console.log(`Client ${client.id} Connected`);
+    try {
+      const token = client.handshake.headers?.authorization.split(' ')[1];
+      if (!token) {
+        return;
+      }
+      const decodedData = this.authService.verifyJwtToken(token);
+      client.join(decodedData.id.toString());
+      console.log(`Client ${decodedData.id} ${client.id} Connected`);
+    } catch (error) {
+      Logger.error(error);
+    }
   }
 
   handleDisconnect(client: Socket) {
