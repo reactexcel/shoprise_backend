@@ -14,6 +14,7 @@ import {
   UploadedFile,
   Param,
   ParseIntPipe,
+  Delete,
 } from '@nestjs/common';
 import { UserService } from './user.service';
 import { AuthService } from 'src/auth/auth.service';
@@ -281,6 +282,69 @@ export class userController {
     } catch (error) {
       if (error instanceof HttpException) throw error;
       throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
+  }
+
+  @Post('follow/:userToFollowId')
+  async followUser(
+    @Req() req: any,
+    @Res() response: Response,
+    @Param('userToFollowId') userToFollowId: number,
+  ) {
+    try {
+      const userId = req.user.id;
+      await this.userService.followUser(userId, userToFollowId);
+      const followUser = await this.userService.fetchById(userToFollowId);
+      return response.status(200).send({
+        success: true,
+        message: 'user followed successfully',
+        user: followUser,
+      });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Delete('unfollow/:userToUnfollowId')
+  async unfollowUser(
+    @Req() req: any,
+    @Res() response: Response,
+    @Param('userToUnfollowId') userToUnfollowId: number,
+  ) {
+    try {
+      const userId = req.user.id;
+      await this.userService.unfollowUser(userId, userToUnfollowId);
+      const unFollowUser = await this.userService.fetchById(userToUnfollowId);
+
+      return response.status(200).send({
+        success: true,
+        message: 'user un-followed successfully',
+        user: unFollowUser,
+      });
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Get('followers')
+  async getAllFollowers(@Req() req: any): Promise<any> {
+    try {
+      const userId = req.user.id;
+      const followers = await this.userService.getAllFollowers(userId);
+      return { followers };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+
+  @Get('following')
+  async getAllFollowing(@Req() req: any): Promise<any> {
+    try {
+      const userId = req.user.id;
+      const following = await this.userService.getAllFollowing(userId);
+      return { following };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
 }

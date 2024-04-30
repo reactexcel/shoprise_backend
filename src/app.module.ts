@@ -82,6 +82,13 @@ export class AppModule implements NestModule {
         { path: 'v1/real-estate/add', method: RequestMethod.POST },
         { path: 'v1/user/update', method: RequestMethod.PUT },
         { path: 'v1/user/get', method: RequestMethod.GET },
+        {
+          path: 'v1/user/unfollow/:userToUnfollowId',
+          method: RequestMethod.DELETE,
+        },
+        { path: 'v1/user/follow/:userToFollowId', method: RequestMethod.POST },
+        { path: 'v1/user/followers', method: RequestMethod.GET },
+        { path: 'v1/user/following', method: RequestMethod.GET },
         { path: 'v1/user/chat/connect', method: RequestMethod.POST },
         { path: 'v1/user/send-message', method: RequestMethod.POST },
         { path: 'v1/user/chat/all-receiver-names', method: RequestMethod.GET },

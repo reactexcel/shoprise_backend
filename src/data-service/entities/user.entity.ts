@@ -1,15 +1,15 @@
+// user.entity.ts
+
 import {
   Entity,
   PrimaryGeneratedColumn,
   Column,
-  BeforeInsert,
   CreateDateColumn,
   UpdateDateColumn,
   OneToMany,
+  ManyToMany,
   JoinTable,
-  OneToOne,
 } from 'typeorm';
-import * as bcrypt from 'bcrypt';
 import { Blog } from './blog.entity';
 import { Product } from './product.entity';
 import { Order } from './order.entity';
@@ -102,8 +102,15 @@ export class User {
   order?: Order[];
 
   @OneToMany(() => SellerRating, (sellerRating) => sellerRating.seller)
-  ratingRec:SellerRating
+  ratingRec: SellerRating;
 
   @OneToMany(() => SellerRating, (sellerRating) => sellerRating.buyer)
-  ratingCont:SellerRating
+  ratingCont: SellerRating;
+
+  @ManyToMany(() => User, (user) => user.following)
+  @JoinTable()
+  followers: User[];
+
+  @ManyToMany(() => User, (user) => user.followers)
+  following: User[];
 }
