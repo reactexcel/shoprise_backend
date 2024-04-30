@@ -4,6 +4,9 @@ import { Repository } from 'typeorm';
 import { User } from '../data-service/entities/user.entity';
 import { SellerRating } from 'src/data-service/entities/sellerRating.entity';
 import { Message } from 'src/data-service/entities/message.entity';
+import { Product } from 'src/data-service/entities/product.entity';
+import { ProductService } from 'src/product/product.service';
+import { OrderService } from 'src/order/order.service';
 
 @Injectable()
 export class UserService {
@@ -17,6 +20,8 @@ export class UserService {
 
     @InjectRepository(Message)
     private readonly messageRepository: Repository<Message>,
+
+    private orderService: OrderService,
   ) {}
 
   async createUser(userData: User): Promise<User> {
@@ -204,6 +209,10 @@ export class UserService {
       throw new NotFoundException('User not found');
     }
     return user.following;
+  }
+
+  async getProductsListing(id: string): Promise<any> {
+    return await this.orderService.getListing(id);
   }
 
   // async updateProfileImg(id:number ,profileImgPath:string): Promise<Iassets> {

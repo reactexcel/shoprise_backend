@@ -9,11 +9,27 @@ import { MulterMiddleware } from 'src/common/middleware/multer.middleware';
 import { SellerRating } from 'src/data-service/entities/sellerRating.entity';
 import { ChatService } from 'src/chat/chat.service';
 import { Message } from 'src/data-service/entities/message.entity';
+import { ProductService } from 'src/product/product.service';
+import { VehicleService } from 'src/vehicle/vehicle.service';
+import { RealEstateService } from 'src/realEstate/realEstate.service';
+import { OrderService } from 'src/order/order.service';
+import { Product } from 'src/data-service/entities/product.entity';
+import { Vehicle } from 'src/data-service/entities/vehicle.entity';
+import { RealEstate } from 'src/data-service/entities/realestate.entity';
+import { Order } from 'src/data-service/entities/order.entity';
 
 @Module({
   imports: [
     ConfigModule,
-    TypeOrmModule.forFeature([User, SellerRating, Message]),
+    TypeOrmModule.forFeature([
+      User,
+      SellerRating,
+      Message,
+      Product,
+      Vehicle,
+      RealEstate,
+      Order,
+    ]),
   ],
   controllers: [userController],
   providers: [
@@ -24,6 +40,7 @@ import { Message } from 'src/data-service/entities/message.entity';
         configService.get<string>('SECRET_KEY'),
       inject: [ConfigService],
     },
+    OrderService,
     AuthService,
     ChatService,
   ],
