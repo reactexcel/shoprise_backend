@@ -38,13 +38,17 @@ export class ChatGateway implements OnGatewayConnection, OnGatewayDisconnect {
   }
 
   handleDisconnect(client: Socket) {
-    const token = client.handshake.headers?.authorization.split(' ')[1];
-    if (!token) {
-      return;
+    try {
+      const token = client.handshake.headers?.authorization.split(' ')[1];
+      if (!token) {
+        return;
+      }
+      const decodedData = this.authService.verifyJwtToken(token);
+      client.join(decodedData.id.toString());
+      console.log(`Client ${decodedData.firstName} ${client.id} Disconnected`);
+    } catch (error) {
+      Logger.error(error);
     }
-    const decodedData = this.authService.verifyJwtToken(token);
-    client.join(decodedData.id.toString());
-    console.log(`Client ${decodedData.firstName} ${client.id} Disconnected`);
   }
 
   @SubscribeMessage('message')

@@ -1,4 +1,4 @@
-import { Injectable, ParseIntPipe } from '@nestjs/common';
+import { Injectable, NotFoundException, ParseIntPipe } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { Order } from 'src/data-service/entities/order.entity';
@@ -65,15 +65,27 @@ export class OrderService {
       relations: {
         product: {
           user: true,
+          photos: true,
         },
         vehicle: {
           user: true,
+          photos: true,
         },
         realEstate: {
           user: true,
+          photos: true,
         },
         buyer: true,
       },
     });
+  }
+  async updateStatus(id: number, action: string): Promise<any> {
+    await this.orderRepository.update(id, { status: action });
+
+    const updatedOrder = await this.orderRepository.findOne({ where: { id } });
+    if (!updatedOrder) {
+      throw new NotFoundException('Order not found');
+    }
+    return updatedOrder;
   }
 }
