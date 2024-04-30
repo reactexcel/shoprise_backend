@@ -347,4 +347,27 @@ export class userController {
       throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
     }
   }
+
+  @Get('product-listing/:userId')
+  async fetchListingProducts(
+    @Req() req: any,
+    @Res() response: Response,
+    @Param('userId') userId: number,
+  ) {
+    try {
+      // const user = await this.userService.fetchById(userId);
+      const products = await this.userService.getProductsListing(
+        userId.toString(),
+      );
+
+      response.status(200).send({
+        success: true,
+        message: 'user product listing fetched successfully',
+        items: products,
+      });
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+    }
+  }
 }

@@ -88,4 +88,23 @@ export class OrderService {
     }
     return updatedOrder;
   }
+  async getListing(id: string) {
+    const productPromise = this.productRepository.find({
+      where: { userId: id },
+    });
+    const vehiclesPromise = this.vehicleRepository.find({
+      where: { userId: id },
+    });
+    const realEstatePromise = this.realEsateRepository.find({
+      where: { userId: id },
+    });
+
+    const [product, vehicles, realEstate] = await Promise.all([
+      productPromise,
+      vehiclesPromise,
+      realEstatePromise,
+    ]);
+
+    return [...product, ...vehicles, ...realEstate];
+  }
 }
