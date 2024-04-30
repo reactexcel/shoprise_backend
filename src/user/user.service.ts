@@ -1,4 +1,4 @@
-import { Injectable, Inject } from '@nestjs/common';
+import { Injectable, Inject, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { User } from '../data-service/entities/user.entity';
@@ -113,6 +113,97 @@ export class UserService {
       .getRawMany();
 
     return messages;
+  }
+
+  async followUser(
+    loggedInUserId: number,
+    userToFollowId: number,
+  ): Promise<void> {
+    const userToFollow = await this.userRepository.findOne({
+      where: { id: userToFollowId },
+    });
+    if (!userToFollow) {
+      throw new NotFoundException('User to follow not found');
+    }
+
+    let loggedInUser = await this.userRepository.findOne({
+      where: { id: loggedInUserId },
+      relations: ['following'],
+    });
+    if (!loggedInUser) {
+      throw new NotFoundException('Logged-in user not found');
+    }
+    loggedInUser.following.push(userToFollow);
+    await this.userRepository.save(loggedInUser);
+
+    let userToFollowWithFollowers = await this.userRepository.findOne({
+      where: { id: userToFollowId },
+      relations: ['followers'],
+    });
+    if (!userToFollowWithFollowers) {
+      throw new NotFoundException('User to follow not found');
+    }
+    userToFollowWithFollowers.followers.push({ id: loggedInUserId } as User);
+    await this.userRepository.save(userToFollowWithFollowers);
+  }
+
+  async unfollowUser(
+    loggedInUserId: number,
+    userToUnfollowId: number,
+  ): Promise<void> {
+    const userToUnfollow = await this.userRepository.findOne({
+      where: { id: userToUnfollowId },
+    });
+    if (!userToUnfollow) {
+      throw new NotFoundException('User to unfollow not found');
+    }
+
+    let loggedInUser = await this.userRepository.findOne({
+      where: { id: loggedInUserId },
+      relations: ['following'],
+    });
+    if (!loggedInUser) {
+      throw new NotFoundException('Logged-in user not found');
+    }
+    loggedInUser.following = loggedInUser.following.filter(
+      (user) => user.id !== userToUnfollow.id,
+    );
+    await this.userRepository.save(loggedInUser);
+
+    let userToUnfollowWithFollowers = await this.userRepository.findOne({
+      where: { id: userToUnfollowId },
+      relations: ['followers'],
+    });
+    if (!userToUnfollowWithFollowers) {
+      throw new NotFoundException('User to unfollow not found');
+    }
+    userToUnfollowWithFollowers.followers =
+      userToUnfollowWithFollowers.followers.filter(
+        (user) => user.id !== loggedInUserId,
+      );
+    await this.userRepository.save(userToUnfollowWithFollowers);
+  }
+
+  async getAllFollowers(userId: number): Promise<User[]> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['followers'],
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user.followers;
+  }
+
+  async getAllFollowing(userId: number): Promise<User[]> {
+    const user = await this.userRepository.findOne({
+      where: { id: userId },
+      relations: ['following'],
+    });
+    if (!user) {
+      throw new NotFoundException('User not found');
+    }
+    return user.following;
   }
 
   // async updateProfileImg(id:number ,profileImgPath:string): Promise<Iassets> {
