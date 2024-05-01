@@ -81,4 +81,33 @@ export class OrderController {
       throw new HttpException(error.message, HttpStatus.NOT_MODIFIED);
     }
   }
+
+  @Get('purchasing-items')
+  async getPurchasing(@Req() req: any, @Res() response: Response) {
+    try {
+      const productData = await this.orderService.getPurchasing(req.user.id);
+      response.status(201).send({
+        success: true,
+        message: 'pruchasing orders fetched successfully',
+        data: productData,
+      });
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
+  @Get('selling-items')
+  async getSellingItems(@Req() req: any, @Res() response: Response) {
+    try {
+      const productData = await this.orderService.getSellingItems(req.user.id);
+      response.status(201).send({
+        success: true,
+        message: 'selleing orders fetched successfully',
+        data: productData,
+      });
+    } catch (error) {
+      if (error instanceof HttpException) throw error;
+      throw new HttpException(error.message, HttpStatus.INTERNAL_SERVER_ERROR);
+    }
+  }
 }
