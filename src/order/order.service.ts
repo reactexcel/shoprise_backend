@@ -32,7 +32,6 @@ export class OrderService {
     } else {
       data = await this.realEsateRepository.findOne({ where: { id } });
     }
-
     const orderData = this.orderRepository.create({
       productId: parentCat === 'product' ? data.id : null,
       vehicleId: parentCat === 'vehicle' ? data.id : null,
@@ -106,5 +105,46 @@ export class OrderService {
     ]);
 
     return [...product, ...vehicles, ...realEstate];
+  }
+
+  async getPurchasing(id: number): Promise<Order[]> {
+    return await this.orderRepository.find({
+      where: {
+        buyerId: id,
+      },
+      relations: {
+        product: {
+          user: true,
+          photos: true,
+        },
+        vehicle: {
+          user: true,
+          photos: true,
+        },
+        realEstate: {
+          user: true,
+          photos: true,
+        },
+        buyer: true,
+      },
+    });
+  }
+
+  async getSellingItems(id: number): Promise<Order[]> {
+    return await this.orderRepository
+      .createQueryBuilder('order')
+      .leftJoinAndSelect('order.product', 'product', 'product.userId = :id', {
+        id,
+      })
+      .leftJoinAndSelect('product.user', 'user')
+      .leftJoinAndSelect('product.photos', 'photos')
+      .leftJoinAndSelect('order.vehicle', 'vehicle')
+      .leftJoinAndSelect('vehicle.user', 'vehicleUser')
+      .leftJoinAndSelect('vehicle.photos', 'vehiclePhotos')
+      .leftJoinAndSelect('order.realEstate', 'realEstate')
+      .leftJoinAndSelect('realEstate.user', 'realEstateUser')
+      .leftJoinAndSelect('realEstate.photos', 'realEstatePhotos')
+      .leftJoinAndSelect('order.buyer', 'buyer')
+      .getMany();
   }
 }
